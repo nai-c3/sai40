@@ -151,6 +151,13 @@
     tex.anisotropy = 4;
     return tex;
   }
+  // Text so klein setzen, dass er in maxW passt (falls die Schrift breiter ausfällt)
+  function fitText(ctx, text, x, y, maxW, size, family) {
+    ctx.font = size + "px " + family;
+    var w = ctx.measureText(text).width;
+    if (w > maxW) ctx.font = Math.floor(size * maxW / w) + "px " + family;
+    ctx.fillText(text, x, y);
+  }
   function rand(a, b) { return a + Math.random() * (b - a); }
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
   // Viele kleine gleiche Teile (Profilstollen, Streusel …) als InstancedMesh
@@ -193,25 +200,6 @@
     var g = new THREE.ExtrudeGeometry(gearShape(R, teeth, R * 0.22, spider), { depth: thick, bevelEnabled: true, bevelThickness: thick * 0.25, bevelSize: thick * 0.2, bevelSegments: 2, curveSegments: 12 });
     g.center();
     return mesh(g, m);
-  }
-
-  // Ziffern-Konturen für Folienballons / Torten-Topper
-  function digitShape(d) {
-    var s = new THREE.Shape();
-    if (d === "0") {
-      s.absellipse(0, 0, 0.62, 1, 0, Math.PI * 2, false, 0);
-      var h = new THREE.Path();
-      h.absellipse(0, 0, 0.27, 0.6, 0, Math.PI * 2, true, 0);
-      s.holes.push(h);
-    } else { // "4"
-      [[0.32, -1], [0.72, -1], [0.72, -0.48], [0.98, -0.48], [0.98, -0.12], [0.72, -0.12], [0.72, 1], [0.34, 1], [-0.78, -0.08], [-0.78, -0.48], [0.32, -0.48]]
-        .forEach(function (p, i) { if (i) s.lineTo(p[0], p[1]); else s.moveTo(p[0], p[1]); });
-      s.closePath();
-      var t = new THREE.Path();
-      t.moveTo(-0.26, -0.12); t.lineTo(0.32, 0.5); t.lineTo(0.32, -0.12); t.closePath();
-      s.holes.push(t);
-    }
-    return s;
   }
 
   /* ---------- Objekt-Baukasten ---------- */
@@ -498,9 +486,10 @@
       var label = canvasTex(1024, 256, function (ctx, w, h) {
         ctx.fillStyle = "#2b3df5"; ctx.fillRect(0, 0, w, h);
         ctx.fillStyle = "#f6e7a8";
-        ctx.font = "160px Anton, Impact, sans-serif";
         ctx.textBaseline = "middle";
-        ctx.fillText("SIMON 40   SIMON 40", 20, h / 2 + 8);
+        ctx.textAlign = "center";
+        fitText(ctx, "SIMON", w * 0.25, h / 2 + 10, 420, 180, "Anton, Impact, sans-serif");
+        fitText(ctx, "SIMON", w * 0.75, h / 2 + 10, 420, 180, "Anton, Impact, sans-serif");
       });
       var body = lathe([[0, -1.1], [0.36, -1.1], [0.42, -1.04], [0.43, -0.6], [0.37, -0.4], [0.37, -0.2], [0.43, 0], [0.43, 0.55], [0.4, 0.7], [0.3, 0.8], [0.3, 0.86], [0, 0.86]], lacquer(C.butter, { roughness: 0.25, transparent: true, opacity: 0.93 }), 72);
       g.add(body);
@@ -529,31 +518,6 @@
       return g;
     },
 
-    /* Folienballons "40" mit Ringelschnüren */
-    forty: function () {
-      var g = new THREE.Group();
-      var foilA = std(C.gold, { metalness: 1, roughness: 0.16 });
-      var foilB = std(0xe7b9ff, { metalness: 1, roughness: 0.16 });
-      var four = extrude(digitShape("4"), 0.12, 0.2, foilA, 8);
-      four.position.set(-0.85, 0.15, 0); four.rotation.z = 0.08;
-      var zero = extrude(digitShape("0"), 0.12, 0.2, foilB, 8);
-      zero.position.set(0.82, 0, 0); zero.rotation.z = -0.08;
-      g.add(four, zero);
-      [[-0.85, -0.9], [0.82, -1.05]].forEach(function (p) {
-        var pts = [];
-        for (var i = 0; i <= 60; i++) {
-          var t = i / 60;
-          pts.push(v(p[0] + Math.sin(t * 20) * 0.06 + t * 0.1, p[1] - t * 1.1, Math.cos(t * 20) * 0.06));
-        }
-        g.add(pipe(pts, 0.012, std(0xffffff, { roughness: 0.5 }), false, 200));
-        var knot = mesh(new THREE.ConeGeometry(0.06, 0.12, 12), foilA);
-        knot.position.set(p[0], p[1] + 0.02, 0);
-        knot.rotation.x = Math.PI;
-        g.add(knot);
-      });
-      return g;
-    },
-
     /* Discokugel aus Spiegelfacetten */
     disco: function () {
       var g = new THREE.Group();
@@ -571,72 +535,8 @@
       return g;
     },
 
-    /* Zweistöckige Torte mit Glasur-Tropfen, Streuseln, Kerzen und "40"-Topper */
-    cake: function () {
-      var g = new THREE.Group();
-      var sponge = lacquer(C.cream, { roughness: 0.6, clearcoat: 0.2 });
-      var icing = lacquer(C.pink, { roughness: 0.2 });
-      function tier(r, h, y) {
-        var t = lathe([[0, y], [r - 0.04, y], [r, y + 0.03], [r, y + h - 0.04], [r - 0.04, y + h], [0, y + h]], sponge, 72);
-        g.add(t);
-        var top = lathe([[0, y + h + 0.03], [r - 0.02, y + h + 0.025], [r + 0.025, y + h - 0.02], [r + 0.02, y + h - 0.06], [0, y + h - 0.06]], icing, 72);
-        g.add(top);
-        var drips = 26;
-        for (var i = 0; i < drips; i++) {
-          var a = (i / drips) * Math.PI * 2 + rand(-0.05, 0.05);
-          var len = rand(0.08, h * 0.65);
-          var d = mesh(new THREE.CylinderGeometry(0.035, 0.035, len, 10), icing);
-          d.position.set(Math.cos(a) * (r + 0.012), y + h - len / 2 - 0.02, Math.sin(a) * (r + 0.012));
-          g.add(d);
-          var tip = mesh(new THREE.SphereGeometry(0.035, 10, 8), icing);
-          tip.position.set(d.position.x, y + h - len - 0.02, d.position.z);
-          g.add(tip);
-        }
-        // Perlenrand unten
-        var beads = 40;
-        g.add(scatter(new THREE.SphereGeometry(0.035, 10, 8), lacquer(0xffffff, { roughness: 0.25 }), beads, function (o, i) {
-          var a = (i / beads) * Math.PI * 2;
-          o.position.set(Math.cos(a) * (r + 0.02), y + 0.035, Math.sin(a) * (r + 0.02));
-        }));
-      }
-      tier(1, 0.6, -0.9);
-      tier(0.68, 0.48, -0.25);
-      // Streusel
-      var colors = [C.blue, C.red, C.mint, C.butter, 0xffffff];
-      g.add(scatter(new THREE.CylinderGeometry(0.012, 0.012, 0.06, 6), lacquer(0xffffff), 90, function (o) {
-        var a = rand(0, Math.PI * 2), rr = Math.sqrt(Math.random()) * 0.6;
-        o.position.set(Math.cos(a) * rr, 0.26, Math.sin(a) * rr);
-        o.rotation.set(Math.PI / 2, 0, rand(0, Math.PI));
-        return pick(colors);
-      }));
-      // Kerzen mit Streifen + Flammen
-      var stripe = canvasTex(64, 256, function (ctx, w, h) {
-        for (var i = 0; i < 16; i++) { ctx.fillStyle = i % 2 ? "#ffffff" : "#2b3df5"; ctx.fillRect(0, i * 16, w, 16); }
-      });
-      stripe.wrapS = THREE.RepeatWrapping;
-      [[-0.45, 0.2], [0.42, -0.25], [-0.15, -0.48], [0.25, 0.42]].forEach(function (p, i) {
-        var candle = mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.32, 16), lacquer(0xffffff, { map: stripe }));
-        candle.position.set(p[0], 0.4, p[1]);
-        candle.rotation.y = i;
-        g.add(candle);
-        var flame = lathe([[0, 0], [0.03, 0.03], [0.035, 0.07], [0.02, 0.12], [0, 0.16]], std(0xffc04d, { emissive: 0xff9a1f, emissiveIntensity: 2 }), 16);
-        flame.position.set(p[0], 0.58, p[1]);
-        g.add(flame);
-      });
-      // Topper "40"
-      var topper = new THREE.Group();
-      var t4 = extrude(digitShape("4"), 0.05, 0.03, M.gold, 3); t4.scale.setScalar(0.22); t4.position.x = -0.15;
-      var t0 = extrude(digitShape("0"), 0.05, 0.03, M.gold, 3); t0.scale.setScalar(0.22); t0.position.x = 0.15;
-      topper.add(t4, t0);
-      topper.add(rod(v(-0.15, -0.2), v(-0.15, -0.45), 0.008, M.gold));
-      topper.add(rod(v(0.15, -0.2), v(0.15, -0.45), 0.008, M.gold));
-      topper.position.y = 0.7;
-      g.add(topper);
-      return g;
-    },
-
     /* Latexballon mit Knoten, Glanz und Ringelschnur */
-    balloon: function (color) {
+    balloon: function (color, noString) {
       var g = new THREE.Group();
       var c = color || C.red;
       var pts = [];
@@ -650,6 +550,7 @@
       g.add(lathe(pts, lacquer(c, { roughness: 0.18, clearcoat: 1 }), 64));
       var knot = lathe([[0, -1.18], [0.07, -1.16], [0.09, -1.08], [0.05, -1.02], [0.06, -0.99], [0, -0.98]], lacquer(c), 24);
       g.add(knot);
+      if (noString) return g;
       var s = [];
       for (var k = 0; k <= 80; k++) {
         var u = k / 80;
@@ -658,151 +559,218 @@
       g.add(pipe(s, 0.008, std(0xffffff, { roughness: 0.5 }), false, 240));
       return g;
     },
-
-    /* Geschenk mit Muster, Deckel, Schleife und Anhänger */
-    gift: function () {
+    /* Strauß aus vielen Luftballons mit zusammenlaufenden Schnüren und Schleife */
+    balloons: function (count) {
       var g = new THREE.Group();
-      var paper = canvasTex(512, 512, function (ctx, w, h) {
-        ctx.fillStyle = "#2b3df5"; ctx.fillRect(0, 0, w, h);
-        ctx.fillStyle = "#ebcdf0";
-        for (var y = 0; y < 8; y++) for (var x = 0; x < 8; x++) {
-          ctx.beginPath(); ctx.arc(x * 64 + (y % 2) * 32 + 16, y * 64 + 32, 9, 0, Math.PI * 2); ctx.fill();
-        }
-      });
-      var pm = lacquer(0xffffff, { map: paper, roughness: 0.4, clearcoat: 0.5 });
-      var box = mesh(new THREE.BoxGeometry(1.4, 1.05, 1.4), pm);
-      box.position.y = -0.1;
-      g.add(box);
-      var lid = mesh(new THREE.BoxGeometry(1.5, 0.25, 1.5), pm);
-      lid.position.y = 0.52;
-      g.add(lid);
-      var rib = lacquer(C.butter, { roughness: 0.25, clearcoat: 1 });
-      g.add(mesh(new THREE.BoxGeometry(1.52, 1.32, 0.22), rib));
-      g.add(mesh(new THREE.BoxGeometry(0.22, 1.32, 1.52), rib));
-      g.children[g.children.length - 1].position.y = 0.02;
-      g.children[g.children.length - 2].position.y = 0.02;
-      // Schleife aus Bandschlaufen
-      [-1, 1].forEach(function (s) {
-        g.add(pipe([v(0, 0.68), v(s * 0.25, 0.95, 0.12), v(s * 0.55, 0.85, 0.05), v(s * 0.5, 0.7, -0.08), v(s * 0.2, 0.7, -0.05), v(0, 0.68)], 0.06, rib, true, 64));
-        g.add(pipe([v(0, 0.66), v(s * 0.2, 0.66, 0.35), v(s * 0.35, 0.65, 0.6)], 0.05, rib, false, 24));
-      });
-      var knot = mesh(new THREE.SphereGeometry(0.12, 16, 12), rib);
-      knot.position.y = 0.7;
-      g.add(knot);
-      var tagTex = canvasTex(256, 128, function (ctx, w, h) {
-        ctx.fillStyle = "#fbf3e2"; ctx.fillRect(0, 0, w, h);
-        ctx.fillStyle = "#ff4f2e"; ctx.font = "64px Anton, Impact, sans-serif";
-        ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("SIMON", w / 2, h / 2 + 4);
-      });
-      var tag = mesh(new THREE.BoxGeometry(0.42, 0.22, 0.01), [std(C.cream), std(C.cream), std(C.cream), std(C.cream), std(0xffffff, { map: tagTex }), std(C.cream)]);
-      tag.position.set(0.45, 0.25, 0.76);
-      tag.rotation.z = -0.25;
-      g.add(tag);
-      return g;
-    },
-
-    /* Partyhut mit Muster, Fransenrand und flauschigem Bommel */
-    hat: function () {
-      var g = new THREE.Group();
-      var tex = canvasTex(512, 512, function (ctx, w, h) {
-        ctx.fillStyle = "#ff4f2e"; ctx.fillRect(0, 0, w, h);
-        ctx.fillStyle = "#f6e7a8";
-        for (var i = -8; i < 16; i += 2) {
-          ctx.beginPath(); ctx.moveTo(i * 32, 0); ctx.lineTo(i * 32 + 32, 0); ctx.lineTo(i * 32 + 32 + 256, h); ctx.lineTo(i * 32 + 256, h); ctx.fill();
-        }
-        ctx.fillStyle = "#2b3df5";
-        for (var k = 0; k < 40; k++) { ctx.beginPath(); ctx.arc(Math.random() * w, Math.random() * h, 7, 0, Math.PI * 2); ctx.fill(); }
-      });
-      var cone = mesh(new THREE.ConeGeometry(0.72, 1.8, 64, 1, true), lacquer(0xffffff, { map: tex, side: THREE.DoubleSide, clearcoat: 0.6 }));
-      g.add(cone);
-      var fringeColors = [C.mint, C.butter, C.lilac];
-      g.add(scatter(new THREE.SphereGeometry(0.075, 8, 6), std(0xffffff, { roughness: 0.9 }), 90, function (o, i) {
-        var a = (i / 90) * Math.PI * 2 * 2;
-        o.position.set(Math.cos(a) * 0.73, -0.9 + (i % 2) * 0.05, Math.sin(a) * 0.73);
-        o.scale.set(1, rand(0.8, 1.4), 1);
-        return pick(fringeColors);
-      }));
-      g.add(scatter(new THREE.SphereGeometry(0.05, 8, 6), std(0xffffff, { roughness: 1 }), 140, function (o) {
-        var dir = v(rand(-1, 1), rand(-1, 1), rand(-1, 1)).normalize().multiplyScalar(rand(0.08, 0.2));
-        o.position.set(dir.x, 0.98 + dir.y, dir.z);
-        return pick([0xffffff, C.mint, 0xd8fff0]);
-      }));
-      g.rotation.z = 0.2;
-      return g;
-    },
-
-    /* Schlüssel mit Anhänger (für die Unterkunft) */
-    key: function () {
-      var g = new THREE.Group();
-      var s = new THREE.Shape();
-      s.absarc(0, 0, 0.42, 0, Math.PI * 2, false);
-      s.holes.push(circleHole(0, 0.05, 0.16));
-      var bow = extrude(s, 0.08, 0.04, M.brass, 4);
-      bow.position.x = -0.95;
-      g.add(bow);
-      var shaft = new THREE.Shape();
-      [[-0.6, -0.07], [0.95, -0.07], [0.95, -0.35], [0.85, -0.35], [0.85, -0.25], [0.75, -0.25], [0.75, -0.38], [0.62, -0.38], [0.62, -0.25], [0.5, -0.25], [0.5, -0.32], [0.4, -0.32], [0.4, -0.07], [0.4, 0.07], [-0.6, 0.07]]
-        .forEach(function (p, i) { if (i) shaft.lineTo(p[0], p[1]); else shaft.moveTo(p[0], p[1]); });
-      var sh = mesh(new THREE.ExtrudeGeometry(shaft, { depth: 0.08, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.02, bevelSegments: 3 }), M.brass);
-      sh.position.z = -0.04;
-      g.add(sh);
-      var collar = mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.16, 32), M.brass);
-      collar.rotation.z = Math.PI / 2; collar.position.x = -0.55;
-      g.add(collar);
-      var ring = mesh(new THREE.TorusGeometry(0.28, 0.03, 12, 48), M.steel);
-      ring.position.set(-1.2, 0.35, 0); ring.rotation.y = 1.2;
-      g.add(ring);
-      var tagTex = canvasTex(512, 256, function (ctx, w, h) {
-        ctx.fillStyle = "#ff4f2e"; ctx.fillRect(0, 0, w, h);
-        ctx.fillStyle = "#fbf3e2"; ctx.font = "92px Anton, Impact, sans-serif";
-        ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("ZIMMER 40", w / 2, h / 2 + 6);
-      });
-      var tagShape = new THREE.Shape();
-      tagShape.moveTo(-0.5, -0.25); tagShape.lineTo(0.35, -0.25); tagShape.lineTo(0.55, 0); tagShape.lineTo(0.35, 0.25); tagShape.lineTo(-0.5, 0.25); tagShape.closePath();
-      tagShape.holes.push(circleHole(0.38, 0, 0.06));
-      var tagGeo = new THREE.ExtrudeGeometry(tagShape, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.02, bevelSegments: 3 });
-      tagGeo.center();
-      // UVs der Vorderseite auf den Text mappen
-      var uv = tagGeo.attributes.uv, pos = tagGeo.attributes.position;
-      for (var i = 0; i < uv.count; i++) uv.setXY(i, (pos.getX(i) + 0.55) / 1.1, (pos.getY(i) + 0.27) / 0.54);
-      var tag = mesh(tagGeo, [lacquer(0xffffff, { map: tagTex, clearcoat: 0.3 }), lacquer(C.red)]);
-      tag.position.set(-1.65, 0.75, 0);
-      tag.rotation.z = -0.9;
-      g.add(tag);
-      return g;
-    },
-
-    /* Donut mit Glasur und bunten Streuseln */
-    donut: function () {
-      var g = new THREE.Group();
-      g.add(mesh(new THREE.TorusGeometry(0.72, 0.36, 32, 64), std(0xd99a5b, { roughness: 0.75 })));
-      var ice = mesh(new THREE.TorusGeometry(0.72, 0.33, 32, 64, Math.PI * 2), lacquer(C.pink, { roughness: 0.2 }));
-      ice.scale.z = 0.75; ice.position.z = 0.12;
-      g.add(ice);
-      var colors = [C.blue, C.mint, C.butter, 0xffffff, C.red];
-      g.add(scatter(new THREE.CylinderGeometry(0.018, 0.018, 0.1, 6), lacquer(0xffffff), 110, function (o) {
-        var a = rand(0, Math.PI * 2), b = rand(0.25, Math.PI - 0.25);
-        var R = 0.72 + Math.cos(b) * 0.33, z = 0.12 + Math.sin(b) * 0.33 * 0.75;
-        o.position.set(Math.cos(a) * R, Math.sin(a) * R, z + 0.01);
-        o.rotation.set(rand(0, 3), rand(0, 3), rand(0, 3));
-        return pick(colors);
-      }));
-      return g;
-    },
-
-    /* Goldstern */
-    star: function () {
-      var s = new THREE.Shape();
-      for (var i = 0; i < 10; i++) {
-        var r = i % 2 ? 0.45 : 1, a = (i / 10) * Math.PI * 2 + Math.PI / 2;
-        if (i) s.lineTo(Math.cos(a) * r, Math.sin(a) * r); else s.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+      var n = count || 9;
+      var colors = [C.red, C.mint, C.butter, C.pink, C.blue, C.lilac, 0xffffff, C.gold];
+      var knot = v(0, -2.9, 0);
+      for (var i = 0; i < n; i++) {
+        var b = builders.balloon(colors[i % colors.length], true);
+        var a = (i / n) * Math.PI * 2 + rand(-0.2, 0.2);
+        var ring = i === 0 ? 0 : 0.95 + (i % 2) * 0.35;
+        var pos = v(Math.cos(a) * ring, rand(-0.2, 0.5) + (i === 0 ? 0.6 : 0), Math.sin(a) * ring * 0.8);
+        var sc = rand(0.8, 1.05);
+        b.scale.setScalar(sc);
+        b.position.copy(pos);
+        b.rotation.set(Math.sin(a) * 0.25, rand(0, Math.PI * 2), -Math.cos(a) * 0.25 * (ring ? 1 : 0));
+        g.add(b);
+        var start = new THREE.Vector3(0, -1.18 * sc, 0).applyEuler(b.rotation).add(pos);
+        g.add(pipe([start, start.clone().lerp(knot, 0.4).add(v(rand(-0.15, 0.15), 0, rand(-0.15, 0.15))), knot], 0.01, std(0xffffff, { roughness: 0.5 }), false, 40));
       }
-      s.closePath();
-      return extrude(s, 0.12, 0.14, M.gold, 6);
+      // Schleife + lange Ringelschnur nach unten
+      var bowMat = lacquer(C.red);
+      [-1, 1].forEach(function (s) {
+        g.add(pipe([knot, v(s * 0.12, -2.75, 0.04), v(s * 0.25, -2.85, 0), v(s * 0.12, -2.95, -0.04), knot], 0.03, bowMat, true, 32));
+      });
+      var tail = [];
+      for (var k = 0; k <= 60; k++) {
+        var u = k / 60;
+        tail.push(v(Math.sin(u * 22) * 0.06, -2.9 - u * 0.9, Math.cos(u * 22) * 0.06));
+      }
+      g.add(pipe(tail, 0.012, std(0xffffff, { roughness: 0.5 }), false, 160));
+      return g;
+    },
+
+    /* Rubbellos mit Rubbelfeldern, teils freigerubbelt, Münze und Rubbelkrümeln */
+    lotto: function () {
+      var g = new THREE.Group();
+      var W = 1.4, H = 2.1;
+      var front = canvasTex(512, 768, function (ctx, w, h) {
+        var grd = ctx.createLinearGradient(0, 0, 0, h);
+        grd.addColorStop(0, "#ff4f2e"); grd.addColorStop(1, "#2b3df5");
+        ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
+        // Sonnenstrahlen
+        ctx.save(); ctx.translate(w / 2, 150); ctx.fillStyle = "rgba(255,255,255,.12)";
+        for (var r = 0; r < 18; r++) { ctx.rotate(Math.PI / 9); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-30, 600); ctx.lineTo(30, 600); ctx.fill(); }
+        ctx.restore();
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.fillStyle = "#f6e7a8"; ctx.font = "96px Anton, Impact, sans-serif";
+        ctx.fillText("GLÜCKSLOS", w / 2, 100);
+        ctx.font = "34px Anton, Impact, sans-serif"; ctx.fillStyle = "#ffffff";
+        ctx.fillText("RUBBELN & GEWINNEN – SIMON 40", w / 2, 175);
+        // Felder: Hintergrund mit Gewinnsymbolen
+        var labels = ["40", "TOUR", "40", "♥", "40", "PARTY"];
+        for (var i = 0; i < 6; i++) {
+          var x = 46 + (i % 2) * 220, y = 230 + Math.floor(i / 2) * 150;
+          ctx.fillStyle = "#fbf3e2"; ctx.fillRect(x, y, 200, 130);
+          ctx.fillStyle = "#ff4f2e"; ctx.font = (labels[i].length > 2 ? 52 : 80) + "px Anton, Impact, sans-serif";
+          ctx.fillText(labels[i], x + 100, y + 68);
+        }
+        // Feld 3 halb freigerubbelt (silberne Reste)
+        ctx.fillStyle = "#b9bdc7";
+        var fx = 46, fy = 380;
+        for (var k = 0; k < 140; k++) {
+          var px = fx + Math.random() * 200, py = fy + Math.random() * 130;
+          if (px - fx + (py - fy) * 0.8 > 150) ctx.fillRect(px, py, 6 + Math.random() * 10, 4 + Math.random() * 6);
+        }
+        ctx.fillStyle = "#f6e7a8"; ctx.font = "26px 'Space Grotesk', sans-serif";
+        ctx.fillText("3 × „40“ = HAUPTGEWINN", w / 2, 715);
+      });
+      var edge = std(0xf4efe6, { roughness: 0.7 });
+      var card = mesh(new THREE.BoxGeometry(W, H, 0.025), [edge, edge, edge, edge, lacquer(0xffffff, { map: front, roughness: 0.4, clearcoat: 0.5 }), std(C.cream, { roughness: 0.8 })]);
+      g.add(card);
+      // Silberne Rubbelschicht auf den noch nicht gerubbelten Feldern (leicht erhaben)
+      var foil = std(0xc9ccd4, { metalness: 0.9, roughness: 0.35 });
+      [1, 3, 5].forEach(function (i) {
+        var x = 46 + (i % 2) * 220, y = 230 + Math.floor(i / 2) * 150;
+        var cx = ((x + 100) / 512 - 0.5) * W, cy = (0.5 - (y + 65) / 768) * H;
+        var f = mesh(new THREE.BoxGeometry(200 / 512 * W, 130 / 768 * H, 0.008), foil);
+        f.position.set(cx, cy, 0.016);
+        g.add(f);
+        // Sternchen-Prägung
+        var st = mesh(new THREE.TorusGeometry(0.05, 0.012, 6, 5), std(0xe9ebf0, { metalness: 1, roughness: 0.2 }));
+        st.position.set(cx, cy, 0.022);
+        g.add(st);
+      });
+      // Münze mit Riffelrand
+      var coin = new THREE.Group();
+      coin.add(mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.05, 64), M.gold));
+      g.add(scatter(new THREE.BoxGeometry(0.012, 0.05, 0.02), M.gold, 90, function (o, i) {
+        var a = (i / 90) * Math.PI * 2;
+        o.position.set(0.74 + Math.cos(a) * 0.285, -0.9, 0.25 + Math.sin(a) * 0.285);
+        o.rotation.y = -a;
+      }));
+      var face = mesh(new THREE.TorusGeometry(0.22, 0.015, 8, 48), M.gold);
+      face.rotation.x = Math.PI / 2; face.position.y = 0.03;
+      coin.add(face);
+      coin.position.set(0.74, -0.9, 0.25);
+      g.add(coin);
+      // Rubbelkrümel
+      g.add(scatter(new THREE.BoxGeometry(0.03, 0.02, 0.008), foil, 40, function (o) {
+        o.position.set(rand(-0.75, -0.1), rand(-0.95, -0.2), rand(0.02, 0.12));
+        o.rotation.set(rand(0, 3), rand(0, 3), rand(0, 3));
+        o.scale.setScalar(rand(0.5, 1.6));
+      }));
+      g.rotation.z = -0.12;
+      return g;
+    },
+
+    /* Akustikgitarre mit Sunburst-Decke, Schallloch-Rosette, Bünden, Mechaniken und Saiten */
+    guitar: function () {
+      var g = new THREE.Group();
+      var right = [[0, -0.78], [0.36, -0.73], [0.53, -0.5], [0.5, -0.2], [0.33, 0.03], [0.38, 0.26], [0.34, 0.5], [0.17, 0.62], [0, 0.64]];
+      var pts = right.map(function (p) { return new THREE.Vector2(p[0], p[1]); });
+      for (var i = right.length - 2; i >= 1; i--) pts.push(new THREE.Vector2(-right[i][0], right[i][1]));
+      var shape = new THREE.Shape();
+      shape.moveTo(pts[0].x, pts[0].y);
+      shape.splineThru(pts.slice(1).concat([pts[0]]));
+      var bodyGeo = new THREE.ExtrudeGeometry(shape, { depth: 0.26, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.025, bevelSegments: 4, curveSegments: 48 });
+      var uv = bodyGeo.attributes.uv, pos = bodyGeo.attributes.position;
+      for (var j = 0; j < uv.count; j++) uv.setXY(j, (pos.getX(j) + 0.6) / 1.2, (pos.getY(j) + 0.8) / 1.5);
+      var burst = canvasTex(512, 640, function (ctx, w, h) {
+        var grd = ctx.createRadialGradient(w / 2, h * 0.45, 30, w / 2, h * 0.45, w * 0.62);
+        grd.addColorStop(0, "#f6c46a"); grd.addColorStop(0.55, "#d9822b"); grd.addColorStop(0.85, "#7a2e12"); grd.addColorStop(1, "#2a0f06");
+        ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
+        ctx.globalAlpha = 0.08; ctx.strokeStyle = "#3a1a08";
+        for (var x = 0; x < w; x += 6) { ctx.beginPath(); ctx.moveTo(x + Math.random() * 3, 0); ctx.lineTo(x + Math.random() * 3, h); ctx.stroke(); }
+      });
+      var body = mesh(bodyGeo, [lacquer(0xffffff, { map: burst, roughness: 0.25, clearcoat: 1 }), lacquer(0x4a1d0c, { roughness: 0.3 })]);
+      body.position.z = -0.13;
+      g.add(body);
+      var topZ = 0.13 + 0.03;
+      // Schallloch + Rosette
+      var hole = mesh(new THREE.CircleGeometry(0.15, 48), std(0x0b0704, { roughness: 1 }));
+      hole.position.set(0, 0.2, topZ + 0.002);
+      g.add(hole);
+      [[0.17, 0.012, 0x1a0d05], [0.19, 0.008, 0xf2e2c0], [0.21, 0.012, 0x1a0d05]].forEach(function (r) {
+        var ring = mesh(new THREE.TorusGeometry(r[0], r[1], 6, 64), std(r[2], { roughness: 0.4 }));
+        ring.position.set(0, 0.2, topZ);
+        g.add(ring);
+      });
+      // Schlagbrett
+      var pg = new THREE.Shape();
+      pg.moveTo(0.12, 0.05); pg.quadraticCurveTo(0.34, 0.0, 0.3, 0.18); pg.quadraticCurveTo(0.28, 0.32, 0.18, 0.33); pg.absarc(0, 0.2, 0.215, 0.6, -0.95, true);
+      var pick2 = mesh(new THREE.ExtrudeGeometry(pg, { depth: 0.004, bevelEnabled: false, curveSegments: 24 }), lacquer(0x2a1208, { roughness: 0.2 }));
+      pick2.position.z = topZ;
+      g.add(pick2);
+      // Steg mit Stegeinlage und Pins
+      var bridge = mesh(new THREE.BoxGeometry(0.42, 0.07, 0.025), lacquer(0x1a0d05));
+      bridge.position.set(0, -0.42, topZ + 0.012);
+      g.add(bridge);
+      var saddle = mesh(new THREE.BoxGeometry(0.26, 0.012, 0.02), std(0xf6f0e0));
+      saddle.position.set(0, -0.4, topZ + 0.03);
+      g.add(saddle);
+      // Hals, Griffbrett, Bünde, Einlagen
+      var neckLen = 1.25, neckY0 = 0.55;
+      var neck = mesh(new THREE.BoxGeometry(0.13, neckLen, 0.08), lacquer(0x6b3a1c, { roughness: 0.35 }));
+      neck.position.set(0, neckY0 + neckLen / 2, 0.08);
+      g.add(neck);
+      var board = mesh(new THREE.BoxGeometry(0.15, neckLen + 0.1, 0.02), std(0x1c120c, { roughness: 0.6 }));
+      board.position.set(0, neckY0 + neckLen / 2 - 0.05, topZ + 0.005);
+      g.add(board);
+      var fretY = neckY0 + neckLen;
+      for (var f = 1; f <= 18; f++) {
+        var y = fretY - (1 - Math.pow(2, -f / 12)) * 1.9;
+        var fret = mesh(new THREE.BoxGeometry(0.15, 0.008, 0.008), M.steel);
+        fret.position.set(0, y, topZ + 0.018);
+        g.add(fret);
+        if ([3, 5, 7, 9, 15, 17].indexOf(f) >= 0 || f === 12) {
+          var yPrev = fretY - (1 - Math.pow(2, -(f - 1) / 12)) * 1.9;
+          [f === 12 ? -0.035 : 0, f === 12 ? 0.035 : null].forEach(function (dx) {
+            if (dx === null) return;
+            var dot = mesh(new THREE.CircleGeometry(0.012, 16), std(0xf3efe6, { roughness: 0.2 }));
+            dot.position.set(dx, (y + yPrev) / 2, topZ + 0.0165);
+            g.add(dot);
+          });
+        }
+      }
+      var nut = mesh(new THREE.BoxGeometry(0.15, 0.015, 0.03), std(0xf6f0e0));
+      nut.position.set(0, fretY, topZ + 0.02);
+      g.add(nut);
+      // Kopfplatte + Mechaniken
+      var head = mesh(new THREE.BoxGeometry(0.2, 0.36, 0.04), lacquer(0x1a0d05));
+      head.position.set(0, fretY + 0.19, 0.12);
+      head.rotation.x = -0.25;
+      g.add(head);
+      for (var k = 0; k < 6; k++) {
+        var side = k < 3 ? -1 : 1;
+        var py = fretY + 0.08 + (k % 3) * 0.1;
+        var post = mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.05, 12), M.chrome);
+        post.rotation.x = Math.PI / 2;
+        post.position.set(side * 0.06, py, 0.17 - (py - fretY) * 0.25);
+        g.add(post);
+        g.add(rod(v(side * 0.1, py, 0.11 - (py - fretY) * 0.25), v(side * 0.16, py, 0.11 - (py - fretY) * 0.25), 0.012, M.chrome));
+        var btn = mesh(new THREE.SphereGeometry(0.035, 16, 12), std(0xf3efe6, { roughness: 0.3 }));
+        btn.scale.set(0.6, 1, 0.4);
+        btn.position.set(side * 0.18, py, 0.11 - (py - fretY) * 0.25);
+        g.add(btn);
+      }
+      // Saiten (Bass dicker, Diskant dünner)
+      for (var s = 0; s < 6; s++) {
+        var x = -0.055 + s * 0.022;
+        g.add(rod(v(x * 1.15, -0.4, topZ + 0.042), v(x * 0.9, fretY, topZ + 0.03), 0.0035 - s * 0.0004, s < 3 ? M.brass : M.chrome, 6));
+      }
+      // Gurtpin
+      var pin = mesh(new THREE.SphereGeometry(0.025, 12, 8), M.chrome);
+      pin.position.set(0, -0.8, 0);
+      g.add(pin);
+      g.rotation.z = 0.35;
+      return g;
     }
   };
-  var randomPool = ["donut", "star", "bell", "balloon", "hat", "gift", "disco", "bottle", "star"];
-  var swayTypes = { bike: 1, forty: 1, key: 1, star: 0 };
+  var randomPool = ["balloon", "balloon", "balloon", "balloon", "balloons", "balloon", "lotto", "disco", "helmet", "bottle", "guitar"];
+  var swayTypes = { bike: 1, guitar: 1, lotto: 1, balloons: 1 };
 
   // Objekt zentrieren und auf "Radius 1" normieren; der äußere Holder wird pro Frame skaliert
   function normalize(obj) {
@@ -841,7 +809,7 @@
     });
 
     // Zufällig verstreute kleinere Objekte am Seitenrand
-    var floaterCount = isMobile ? 6 : 12;
+    var floaterCount = isMobile ? 8 : 16;
     var docH = document.documentElement.scrollHeight;
     var vh = window.innerHeight;
     // Container mit overflow:hidden, damit Randobjekte keinen horizontalen Scroll erzeugen

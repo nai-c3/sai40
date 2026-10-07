@@ -383,7 +383,7 @@ section, header, footer { position: relative; }
   }
   .hero__sub { margin-top: 1.5rem; }
   .hero__obj--a { width: 28vw; top: 4svh; right: 3vw; }
-  .hero__obj--b { width: 32vw; bottom: 3svh; left: 4vw; }
+  .hero__obj--b { width: 40vw; bottom: 2svh; left: 0; }
 
   .teaser { padding: 12svh 16px 16svh; }
   .teaser__q { margin-bottom: 10svh; }
@@ -402,7 +402,7 @@ section, header, footer { position: relative; }
 
   .day { padding: 11svh 20px 13svh; }
   .day__head { margin-bottom: 3.5rem; }
-  .day__obj { width: 30vw; left: auto; right: -3vw; bottom: -22%; transform: none; }
+  .day__obj { width: 38vw; left: auto; right: -5vw; bottom: -30%; transform: none; }
   .timeline { gap: 2.4rem; }
   .timeline .small { font-size: .9rem; }
   .timeline .addr { font-size: .85rem; }
