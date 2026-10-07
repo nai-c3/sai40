@@ -772,6 +772,85 @@
   var randomPool = ["balloon", "balloon", "balloon", "balloon", "balloons", "balloon", "lotto", "disco", "helmet", "bottle", "guitar"];
   var swayTypes = { bike: 1, guitar: 1, lotto: 1, balloons: 1 };
 
+  /* ---------- Glas ----------
+     Jedes Mesh bekommt zwei Schichten:
+     1) getönter, durchscheinender Glaskörper (Farbe des Originals)
+     2) additive Spiegelschicht mit Fresnel-Kante – Reflexionen + helle Ränder,
+        die auch über dem HTML-Hintergrund leuchten */
+  var glassCache = {};
+  function glassBody(src) {
+    if (glassCache[src.uuid]) return glassCache[src.uuid];
+    var tint = src.color ? src.color.clone() : new THREE.Color(1, 1, 1);
+    
+    // helle Farben werden klares Glas, kräftige Farben farbiges Glas
+    var lum = tint.r * 0.3 + tint.g * 0.59 + tint.b * 0.11;
+    var m = new THREE.MeshPhysicalMaterial({
+      color: tint,
+      map: src.map || null,
+      // leichtes Eigenleuchten in der Glasfarbe, damit die Tönung auch vor Blau kräftig bleibt
+      emissive: src.emissive && src.emissive.getHex() ? src.emissive.clone() : tint.clone().multiplyScalar(src.map ? 0.05 : 0.12 * (1 - lum)),
+      emissiveIntensity: src.emissive && src.emissive.getHex() ? src.emissiveIntensity : 1,
+      metalness: 0,
+      roughness: 0.12,
+      envMapIntensity: 0.5,
+      transparent: true,
+      opacity: src.map ? 0.68 : Math.max(0.08, 0.62 - 0.56 * lum),
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      flatShading: !!src.flatShading
+    });
+    glassCache[src.uuid] = m;
+    return m;
+  }
+  var glintMat = (function () {
+    var m = new THREE.MeshStandardMaterial({
+      color: 0xffffff, metalness: 1, roughness: 0.04, envMapIntensity: 1,
+      transparent: true, depthWrite: false,
+      // rein additiv auf RGB, Alpha bleibt unverändert -> Lichtreflexe ohne dunkle Flächen
+      blending: THREE.CustomBlending,
+      blendEquation: THREE.AddEquation,
+      blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
+      blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor
+    });
+    m.onBeforeCompile = function (shader) {
+      shader.fragmentShader = shader.fragmentShader.replace("#include <dithering_fragment>",
+        "float fr = pow(1.0 - abs(dot(normalize(normal), vec3(0.0, 0.0, 1.0))), 2.6);\n" +
+        "gl_FragColor.rgb = gl_FragColor.rgb * (0.05 + 0.55 * fr) + vec3(0.85, 0.9, 1.0) * fr * 0.3;\n" +
+        "#include <dithering_fragment>");
+    };
+    return m;
+  })();
+  // Facettiertes Glas (Discokugel): kräftigere Spiegelungen
+  var glintFlat = glintMat.clone();
+  glintFlat.flatShading = true;
+  glintFlat.onBeforeCompile = function (shader) {
+    shader.fragmentShader = shader.fragmentShader.replace("#include <dithering_fragment>",
+      "float fr = pow(1.0 - abs(dot(normalize(normal), vec3(0.0, 0.0, 1.0))), 2.0);\n" +
+      "gl_FragColor.rgb = gl_FragColor.rgb * (0.3 + 0.6 * fr) + vec3(0.85, 0.9, 1.0) * fr * 0.25;\n" +
+      "#include <dithering_fragment>");
+  };
+  function glassify(root) {
+    var meshes = [];
+    root.traverse(function (o) { if (o.isMesh) meshes.push(o); });
+    meshes.forEach(function (o) {
+      var src = Array.isArray(o.material) ? o.material : [o.material];
+      var body = src.map(glassBody);
+      o.material = Array.isArray(o.material) ? body : body[0];
+      o.renderOrder = 1;
+      var gm = src[0].flatShading ? glintFlat : glintMat;
+      var glint;
+      if (o.isInstancedMesh) {
+        glint = new THREE.InstancedMesh(o.geometry, gm, o.count);
+        glint.instanceMatrix.copy(o.instanceMatrix);
+      } else {
+        glint = new THREE.Mesh(o.geometry, gm);
+      }
+      glint.renderOrder = 2;
+      o.add(glint);
+    });
+    return root;
+  }
+
   // Objekt zentrieren und auf "Radius 1" normieren; der äußere Holder wird pro Frame skaliert
   function normalize(obj) {
     obj.updateMatrixWorld(true);
@@ -791,7 +870,7 @@
   function addItem(el, type, speed) {
     if (!builders[type]) type = pick(randomPool);
     var inner = type === "balloon" && !el.dataset.obj ? builders.balloon(pick([C.red, C.mint, C.butter, C.pink, C.blue])) : builders[type]();
-    var obj = normalize(inner);
+    var obj = normalize(glassify(inner));
     scene.add(obj);
     items.push({
       el: el, obj: obj, inner: inner, type: type, speed: speed,
