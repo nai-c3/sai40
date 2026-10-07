@@ -12,3 +12,10 @@ Reines HTML/CSS/JS, kein Build nötig: `index.html` im Browser öffnen oder z. B
   - `data-speed`: Parallax-Stärke (negativ = Gegenrichtung)
   - Zusätzlich werden kleine zufällige Objekte über die Seite verteilt (`assets/js/main.js`, `floaterCount`).
 - **Farben/Schriften:** CSS-Variablen oben in `assets/css/style.css`.
+
+## Effekte
+- **Route:** Die rote Linie (`id="route-path"` in `index.html`) zeichnet sich beim Scrollen. Ihr `d`-Attribut an die echte Strecke auf der Karte anpassen; Stationen über `data-stops` (Position 0–1 : Name), Gesamt-km über `data-km`.
+- **Rubbellos:** Abschnitt `#rubbellos` – Gewinntext in `.scratch__prize` eintragen.
+- **Antippen:** Ballons platzen (kommen nach 5 s zurück), Discokugel wirft Lichtpunkte, Gitarre spielt Akkorde (G, Em, C, D).
+- **Konfetti:** regnet beim „Wir lieben dich!“ (nochmal: Überschrift antippen).
+- **Fahrrad:** fährt beim Scrollen durch den „Aber wieeee?“-Abschnitt (`data-ride="true"`).

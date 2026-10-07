@@ -356,6 +356,71 @@ section, header, footer { position: relative; }
 .outro__obj--a { top: 6vh; left: 8vw; }
 .outro__obj--b { bottom: 4vh; right: 8vw; }
 
+/* ---------- Route zeichnet sich ---------- */
+.route__canvas { position: relative; }
+.route__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.route__ghost, .route__line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.route__ghost { stroke: rgba(255, 255, 255, .45); stroke-width: 3; stroke-dasharray: 2 9; }
+.route__line { stroke: var(--red); stroke-width: 6; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .25)); }
+.route__head circle { fill: var(--red); stroke: var(--white); stroke-width: 3; }
+.route__head .route__pulse { fill: rgba(255, 79, 46, .35); stroke: none; animation: pulse 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { from { transform: scale(.6); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
+.route__stop { opacity: 0; transition: opacity .4s; }
+.route__stop.is-on { opacity: 1; }
+.route__stop circle { fill: var(--white); stroke: var(--ink); stroke-width: 3; }
+.route__stop text { font-family: var(--f-display); font-size: 17px; fill: var(--ink); paint-order: stroke; stroke: var(--white); stroke-width: 4px; text-transform: uppercase; }
+.route__km { font-family: var(--f-display); font-size: 1.4em; color: var(--red); font-variant-numeric: tabular-nums; }
+.route__note { opacity: .5; }
+
+/* ---------- Rubbellos ---------- */
+.scratch { padding: 16vh 16px 18vh; text-align: center; }
+.scratch__title { font-size: clamp(3.2rem, 11vw, 8rem); color: var(--butter); }
+.scratch__hint { margin: 1rem 0 2.5rem; }
+.scratch__card {
+  position: relative;
+  width: min(100%, 460px);
+  aspect-ratio: 3 / 2;
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--cream);
+  box-shadow: 0 0 0 6px var(--butter), 0 24px 50px rgba(0, 0, 0, .25);
+  transform: rotate(-2deg);
+  transition: transform .5s cubic-bezier(.2, .7, .2, 1.4);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.scratch__card.is-won { transform: rotate(0) scale(1.04); }
+.scratch__prize {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: .4rem;
+  padding: 1.2rem;
+  color: var(--blue);
+}
+.scratch__kicker { font-weight: 600; text-transform: uppercase; letter-spacing: .3em; font-size: .8rem; color: var(--red); }
+.scratch__win { font-size: clamp(2.2rem, 8vw, 3.4rem); }
+.scratch__text { font-size: .95rem; }
+.scratch__layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+  transition: opacity .8s;
+}
+.scratch__layer.is-done { opacity: 0; pointer-events: none; }
+
+/* ---------- Discokugel-Lichtpunkte ---------- */
+.disco-dots { position: fixed; inset: 0; pointer-events: none; z-index: 21; overflow: hidden; }
+.disco-dots span { position: absolute; left: 0; top: 0; border-radius: 50%; margin: -6px 0 0 -6px; mix-blend-mode: screen; will-change: transform, opacity; }
+
+.outro__title { cursor: pointer; }
+.outro__tip { margin-top: 2.5rem; font-size: .85rem; color: var(--blue); opacity: .7; }
+
 /* ---------- Einblend-Animation ---------- */
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s ease, transform .9s cubic-bezier(.2, .7, .2, 1); }
 .reveal.is-in { opacity: 1; transform: none; }
@@ -417,6 +482,7 @@ section, header, footer { position: relative; }
   .collage__btn { grid-column: 1 / -1; justify-self: center; }
 
   .pack { padding: 11svh 16px; }
+  .scratch { padding: 12svh 16px 14svh; }
   .pack__list li { font-size: .95rem; }
 
   .outro { padding: 20svh 16px 18svh; padding-bottom: calc(18svh + env(safe-area-inset-bottom)); }

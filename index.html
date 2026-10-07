@@ -33,7 +33,7 @@
   <section class="teaser section--blue">
     <p class="serif teaser__q reveal">Die Frage ist nur…</p>
     <h2 class="display teaser__big reveal">Aber<br>wieeeee?</h2>
-    <div class="obj3d teaser__obj" data-obj="bike" data-speed="0.15"></div>
+    <div class="obj3d teaser__obj" data-obj="bike" data-speed="0" data-ride="true"></div>
     <p class="serif teaser__answer reveal">Auf zwei Rädern. Drei Tage. Zwei Nächte.</p>
   </section>
 
@@ -75,10 +75,19 @@
   <section class="route section--green" id="route">
     <h2 class="spaced reveal">Die Route</h2>
     <div class="route__grid">
-      <!-- PLATZHALTER: Kartenbild (z. B. Screenshot aus Komoot) -->
+      <!-- PLATZHALTER: Kartenbild (z. B. Screenshot aus Komoot).
+           Die Linie (id="route-path") zeichnet sich beim Scrollen – ihr "d" an die echte Strecke anpassen.
+           data-stops: Position auf der Linie (0–1) und Name der Stationen. -->
       <figure class="route__map reveal">
-        <img src="assets/img/route.svg" alt="Karte der Route">
-        <figcaption>Insgesamt ca. XXX km</figcaption>
+        <div class="route__canvas">
+          <img src="assets/img/route.svg" alt="Karte der Route">
+          <svg class="route__svg" viewBox="0 0 300 400" data-stops="0:Start,0.36:Nacht 1,0.7:Nacht 2,1:Ziel" aria-hidden="true">
+            <path class="route__ghost" d="M60 350 C 40 290, 110 270, 120 220 S 70 140, 120 100 S 230 60, 240 130 S 200 230, 250 280 S 200 360, 150 330"/>
+            <path id="route-path" class="route__line" d="M60 350 C 40 290, 110 270, 120 220 S 70 140, 120 100 S 230 60, 240 130 S 200 230, 250 280 S 200 360, 150 330"/>
+            <g class="route__head"><circle r="11" class="route__pulse"/><circle r="6"/></g>
+          </svg>
+        </div>
+        <figcaption><span class="route__km" data-km="150">0</span> von ca. 150 km <span class="route__note">(Platzhalter)</span></figcaption>
       </figure>
       <dl class="route__stats reveal">
         <dt>Strecke</dt><dd>XXX km in 3 Etappen</dd>
@@ -166,12 +175,27 @@
     </ul>
   </section>
 
+  <!-- ============ RUBBELLOS ============ -->
+  <section class="scratch section--red" id="rubbellos">
+    <h2 class="display scratch__title reveal">Rubbel dich frei!</h2>
+    <p class="serif scratch__hint reveal">Mit dem Finger (oder der Maus) über das Feld rubbeln.</p>
+    <div class="scratch__card">
+      <div class="scratch__prize">
+        <span class="scratch__kicker">Hauptgewinn</span>
+        <strong class="display scratch__win">[Überraschung]</strong>
+        <span class="scratch__text">[Platzhalter: z. B. ein Gutschein, ein Geheimnis oder das Ziel der Tour]</span>
+      </div>
+      <canvas class="scratch__layer" aria-label="Rubbelfeld"></canvas>
+    </div>
+  </section>
+
   <!-- ============ OUTRO ============ -->
   <footer class="outro section--lilac">
     <div class="obj3d outro__obj outro__obj--a" data-obj="balloons" data-speed="0.3"></div>
     <div class="obj3d outro__obj outro__obj--b" data-obj="disco" data-speed="-0.3"></div>
     <h2 class="display outro__title reveal">Wir lieben dich!</h2>
     <p class="serif outro__sign reveal">Deine [Absender]</p>
+    <p class="outro__tip reveal">Psst: Ballons lassen sich antippen – und die Gitarre auch.</p>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
