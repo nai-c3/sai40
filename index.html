@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simon wird 40</title>
+  <meta name="description" content="Simon wird 40 – und wir feiern mit einer Fahrradtour inkl. 2 Übernachtungen.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- 3D-Ebene: Objekte werden an die .obj3d-Anker gehängt (siehe assets/js/main.js) -->
+  <canvas id="scene3d" aria-hidden="true"></canvas>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero section--blue">
+    <h1 class="hero__title">
+      <span class="hero__line">Simon</span>
+      <span class="hero__line">wird 40</span>
+    </h1>
+    <!-- PLATZHALTER: freigestelltes Foto von Simon (am besten PNG mit transparentem Hintergrund) -->
+    <img class="hero__photo" src="assets/img/simon.svg" alt="Simon">
+    <div class="obj3d hero__obj hero__obj--a" data-obj="disco" data-speed="0.35"></div>
+    <div class="obj3d hero__obj hero__obj--b" data-obj="beer" data-speed="-0.25"></div>
+    <p class="serif hero__sub">und wir feiern das!</p>
+  </header>
+
+  <!-- ============ TEASER ============ -->
+  <section class="teaser section--blue">
+    <p class="serif teaser__q reveal">Die Frage ist nur…</p>
+    <h2 class="display teaser__big reveal">Aber<br>wieeeee?</h2>
+    <div class="obj3d teaser__obj" data-obj="bike" data-speed="0.15"></div>
+    <p class="serif teaser__answer reveal">Auf zwei Rädern. Drei Tage. Zwei Nächte.</p>
+  </section>
+
+  <!-- ============ ORT / ROUTE TITEL ============ -->
+  <section class="place">
+    <svg class="wave wave--top" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 0h1440v60c-120 40-240 40-360 0s-240-40-360 0-240 40-360 0S120 20 0 60z" fill="var(--blue)"/>
+      <path d="M0 70c120-40 240-40 360 0s240 40 360 0 240-40 360 0 240 40 360 0" fill="none" stroke="var(--ink)" stroke-width="5"/>
+      <path d="M0 88c120-40 240-40 360 0s240 40 360 0 240-40 360 0 240 40 360 0" fill="none" stroke="var(--ink)" stroke-width="3"/>
+    </svg>
+    <!-- PLATZHALTER: großes Landschaftsfoto der Region -->
+    <img class="place__img" src="assets/img/hero.svg" alt="">
+    <h2 class="display place__title reveal">[Region]<br>per Rad</h2>
+  </section>
+
+  <!-- ============ EINLADUNG / ECKDATEN ============ -->
+  <section class="intro section--red">
+    <div class="obj3d intro__obj" data-obj="helmet" data-speed="0.3"></div>
+    <h2 class="display intro__title reveal">Bist du bereit?</h2>
+    <div class="intro__text reveal">
+      <p><strong>Lieber Simon, alles Gute zu deinem 40. Geburtstag!</strong></p>
+      <p>[Platzhalter] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Wir wollen mit dir ein unvergessliches Wochenende erleben – mit Fahrtwind, guten Gesprächen, kühlen Getränken und viel zu viel Essen.</p>
+    </div>
+    <div class="arrow" aria-hidden="true"></div>
+  </section>
+
+  <section class="facts section--ink">
+    <svg class="curve curve--top" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h1440v20C1000 90 440 90 0 20z" fill="var(--red)"/></svg>
+    <p class="facts__lead reveal">Denn wir schenken dir eine Fahrradtour! [Platzhalter: kurzer Satz, was Simon erwartet – z.&nbsp;B. „Und keine Sorge: das Gepäck fährt mit dem Auto.“]</p>
+    <dl class="facts__list">
+      <div class="reveal"><dt>Wann?</dt><dd class="facts__big">XX. – XX.XX.2027</dd></div>
+      <div class="reveal"><dt>Wo?</dt><dd class="facts__big">[Startort]</dd><dd>[Straße Nr.]<br>[PLZ Ort]</dd></div>
+      <div class="reveal"><dt>Wer?</dt><dd class="facts__big">[Ihr – die Gratulanten]</dd></div>
+    </dl>
+    <svg class="curve curve--bottom" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 80h1440V0C1000 70 440 70 0 0z" fill="var(--green)"/></svg>
+  </section>
+
+  <!-- ============ ROUTE ============ -->
+  <section class="route section--green" id="route">
+    <h2 class="spaced reveal">Die Route</h2>
+    <div class="route__grid">
+      <!-- PLATZHALTER: Kartenbild (z. B. Screenshot aus Komoot) -->
+      <figure class="route__map reveal">
+        <img src="assets/img/route.svg" alt="Karte der Route">
+        <figcaption>Insgesamt ca. XXX km</figcaption>
+      </figure>
+      <dl class="route__stats reveal">
+        <dt>Strecke</dt><dd>XXX km in 3 Etappen</dd>
+        <dt>Etappe 1</dt><dd>[Start] → [Ziel] · XX km</dd>
+        <dt>Etappe 2</dt><dd>[Start] → [Ziel] · XX km</dd>
+        <dt>Etappe 3</dt><dd>[Start] → [Ziel] · XX km</dd>
+        <dt>Höhenmeter</dt><dd>ca. XXX hm</dd>
+        <dt>Schwierigkeit</dt><dd>Gemütlich (mit Bierpausen)</dd>
+      </dl>
+    </div>
+    <div class="obj3d route__obj" data-obj="bottle" data-speed="-0.3"></div>
+  </section>
+
+  <!-- ============ PROGRAMM ============ -->
+  <section class="day section--lilac" id="programm">
+    <p class="day__date reveal">XX. – XX.XX.2027</p>
+    <div class="day__head">
+      <h2 class="display day__name">Freitag</h2>
+      <div class="obj3d day__obj" data-obj="wheel" data-speed="0.08"></div>
+    </div>
+    <ol class="timeline">
+      <li class="reveal"><time>9:30</time><h3>Treffpunkt &amp; Abfahrt</h3><p class="small">[Ort / Hinweis, z. B. „Kaffee &amp; Croissants stehen bereit“]</p><p class="addr">[Straße Nr.]<br>[PLZ Ort]</p></li>
+      <li class="reveal"><time>12:30</time><h3>Mittagspause</h3><p class="small">[Name Lokal / Picknick]</p><p class="addr">[Adresse]</p></li>
+      <li class="reveal"><time>16:00</time><h3>Ankunft &amp; Check-in</h3><p class="small">[Unterkunft]</p><p class="addr">[Adresse]</p></li>
+      <li class="reveal"><time>19:00</time><h3>Grillen &amp; Abendprogramm</h3><p class="small">[Platzhalter]</p></li>
+    </ol>
+  </section>
+
+  <!-- Unterkunft: Bild mit Titel (wie „Hotel & Restaurant“ bei der Referenz) -->
+  <section class="stay" id="unterkunft">
+    <img class="stay__img" src="assets/img/unterkunft-1.svg" alt="">
+    <div class="stay__overlay">
+      <h2 class="serif stay__title reveal">Unsere Unterkunft<br>[Name / Ort]</h2>
+    </div>
+  </section>
+
+  <section class="day section--blue">
+    <div class="day__head">
+      <h2 class="display day__name">Samstag</h2>
+      <div class="obj3d day__obj" data-obj="cake" data-speed="0.08"></div>
+    </div>
+    <ol class="timeline">
+      <li class="reveal"><time>Bis 9:30</time><h3>Geburtstagsfrühstück</h3><p class="small">[Platzhalter]</p></li>
+      <li class="reveal"><time>10:30</time><h3>Etappe 2</h3><p class="small">[Start] → [Ziel] · XX km</p></li>
+      <li class="reveal"><time>14:00</time><h3>Badestopp / Überraschung</h3><p class="small">[Platzhalter]</p></li>
+      <li class="reveal"><time>Abends</time><h3>Party!</h3><p class="small">[Restaurant / Programm]</p><p class="addr">[Adresse]</p></li>
+    </ol>
+  </section>
+
+  <section class="day section--lilac">
+    <div class="day__head">
+      <h2 class="display day__name">Sonntag</h2>
+      <div class="obj3d day__obj" data-obj="balloon" data-speed="0.08"></div>
+    </div>
+    <ol class="timeline">
+      <li class="reveal"><time>Bis 11:00</time><h3>Frühstück &amp; Check-out</h3></li>
+      <li class="reveal"><time>12:00</time><h3>Etappe 3</h3><p class="small">[Start] → [Ziel] · XX km</p></li>
+      <li class="reveal"><time>Abends</time><h3>Heimfahrt – ausruhen</h3><p class="small">Regenerieren is auch mal fein!</p></li>
+    </ol>
+  </section>
+
+  <!-- ============ UNTERKUNFT DETAILS ============ -->
+  <section class="lodging section--cream">
+    <h2 class="spaced reveal">Die Unterkunft</h2>
+    <div class="collage">
+      <img class="collage__a reveal" src="assets/img/unterkunft-1.svg" alt="Unterkunft – außen">
+      <img class="collage__b reveal" src="assets/img/unterkunft-2.svg" alt="Unterkunft – Zimmer">
+      <img class="collage__c reveal" src="assets/img/unterkunft-3.svg" alt="Unterkunft – Umgebung">
+      <a class="btn collage__btn" href="https://www.airbnb.de/rooms/1284839305458168826" target="_blank" rel="noopener">Zur Unterkunft auf Airbnb</a>
+    </div>
+    <p class="lodging__text reveal">[Platzhalter] 2 Nächte · X Schlafzimmer · X Betten · Bettwäsche &amp; Handtücher vorhanden.</p>
+    <div class="obj3d lodging__obj" data-obj="tent" data-speed="-0.25"></div>
+  </section>
+
+  <!-- ============ PACKLISTE ============ -->
+  <section class="pack section--green">
+    <h2 class="spaced reveal">Was du einpacken solltest</h2>
+    <ul class="pack__list">
+      <li class="reveal">Fahrrad (fit gemacht!) &amp; Helm</li>
+      <li class="reveal">Regenjacke</li>
+      <li class="reveal">Badesachen</li>
+      <li class="reveal">Trinkflasche</li>
+      <li class="reveal">Sonnencreme</li>
+      <li class="reveal">Gute Laune</li>
+    </ul>
+  </section>
+
+  <!-- ============ OUTRO ============ -->
+  <footer class="outro section--lilac">
+    <div class="obj3d outro__obj outro__obj--a" data-obj="gift" data-speed="0.3"></div>
+    <div class="obj3d outro__obj outro__obj--b" data-obj="hat" data-speed="-0.3"></div>
+    <h2 class="display outro__title reveal">Wir lieben dich!</h2>
+    <p class="serif outro__sign reveal">Deine [Absender]</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
