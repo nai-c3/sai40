@@ -44,9 +44,8 @@
       <path d="M0 70c120-40 240-40 360 0s240 40 360 0 240-40 360 0 240 40 360 0" fill="none" stroke="var(--ink)" stroke-width="5"/>
       <path d="M0 88c120-40 240-40 360 0s240 40 360 0 240-40 360 0 240 40 360 0" fill="none" stroke="var(--ink)" stroke-width="3"/>
     </svg>
-    <!-- PLATZHALTER: großes Landschaftsfoto der Region -->
-    <img class="place__img" src="assets/img/hero.svg" alt="">
-    <h2 class="display place__title reveal">[Region]<br>per Rad</h2>
+    <img class="place__img" src="assets/img/see-landschaft.jpg" alt="Seeufer mit Birken im Ruppiner Seenland">
+    <h2 class="display place__title reveal">Ruppiner<br>Seenland</h2>
   </section>
 
   <!-- ============ EINLADUNG / ECKDATEN ============ -->
@@ -62,10 +61,10 @@
 
   <section class="facts section--ink">
     <svg class="curve curve--top" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h1440v20C1000 90 440 90 0 20z" fill="var(--red)"/></svg>
-    <p class="facts__lead reveal">Denn wir schenken dir eine Fahrradtour! [Platzhalter: kurzer Satz, was Simon erwartet – z.&nbsp;B. „Und keine Sorge: das Gepäck fährt mit dem Auto.“]</p>
+    <p class="facts__lead reveal">Denn wir schenken dir ein Wochenende mit Fahrrad, See, Sauna und Spieleabenden – und uns!</p>
     <dl class="facts__list">
-      <div class="reveal"><dt>Wann?</dt><dd class="facts__big">XX. – XX.XX.2027</dd></div>
-      <div class="reveal"><dt>Wo?</dt><dd class="facts__big">[Startort]</dd><dd>[Straße Nr.]<br>[PLZ Ort]</dd></div>
+      <div class="reveal"><dt>Wann?</dt><dd class="facts__big">30.10. – 01.11.2026</dd></div>
+      <div class="reveal"><dt>Wo?</dt><dd class="facts__big">Bahnhof Gesundbrunnen</dd><dd>Treffpunkt mit unseren Bikes<br>Berlin</dd></div>
       <div class="reveal"><dt>Wer?</dt><dd class="facts__big">[Ihr – die Gratulanten]</dd></div>
     </dl>
     <svg class="curve curve--bottom" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true"><path d="M0 80h1440V0C1000 70 440 70 0 0z" fill="var(--green)"/></svg>
@@ -75,27 +74,39 @@
   <section class="route section--green" id="route">
     <h2 class="spaced reveal">Die Route</h2>
     <div class="route__grid">
-      <!-- PLATZHALTER: Kartenbild (z. B. Screenshot aus Komoot).
-           Die Linie (id="route-path") zeichnet sich beim Scrollen – ihr "d" an die echte Strecke anpassen.
-           data-stops: Position auf der Linie (0–1) und Name der Stationen. -->
+      <!-- Karte: Dorf Zechlin -> Löwenberg (Mark), nachgezeichnet nach Google Maps.
+           Die rote Linie (id="route-path") zeichnet sich beim Scrollen.
+           data-stops: Position auf der Linie (0–1) und Name der Station. -->
       <figure class="route__map reveal">
         <div class="route__canvas">
-          <img src="assets/img/route.svg" alt="Karte der Route">
-          <svg class="route__svg" viewBox="0 0 300 400" data-stops="0:Start,0.36:Nacht 1,0.7:Nacht 2,1:Ziel" aria-hidden="true">
-            <path class="route__ghost" d="M60 350 C 40 290, 110 270, 120 220 S 70 140, 120 100 S 230 60, 240 130 S 200 230, 250 280 S 200 360, 150 330"/>
-            <path id="route-path" class="route__line" d="M60 350 C 40 290, 110 270, 120 220 S 70 140, 120 100 S 230 60, 240 130 S 200 230, 250 280 S 200 360, 150 330"/>
+          <svg class="route__svg" viewBox="0 0 300 400" data-stops="0:Dorf Zechlin,0.6:Lindow (Mark),1:Löwenberg (Mark)" role="img" aria-label="Karte der Fahrradroute von Dorf Zechlin über Lindow nach Löwenberg (Mark)">
+            <rect class="map__land" width="300" height="400"/>
+            <g class="map__lakes">
+              <path d="M18 6c18-4 40 2 52 14s4 22-12 24-20 10-30 6S6 34 8 22s-4-14 10-16z"/>
+              <path d="M214 18c16-6 34 0 38 14s-8 26-22 28-26-6-26-18 0-20 10-24z"/>
+              <path d="M12 130c8-6 18 0 20 14s-2 34 2 50-4 34-12 32-8-20-10-36 0-34-4-46 0-12 4-14z"/>
+              <path d="M110 238c10-8 26-6 30 4s-4 22-14 30-26 8-28-2 2-26 12-32z"/>
+              <path d="M174 222c10-2 20 6 20 18s-8 22-16 22-12-10-12-20 0-18 8-20z"/>
+              <path d="M70 150c8-4 14 2 14 10s-6 14-12 12-10-8-8-14 2-6 6-8z"/>
+              <path d="M226 190c12-4 24 4 24 14s-10 16-20 14-14-10-12-18 2-8 8-10z"/>
+            </g>
+            <text class="map__area" x="215" y="118">Ruppiner Wald-</text>
+            <text class="map__area" x="215" y="134">und Seengebiet</text>
+            <g class="map__north" transform="translate(272 372)"><path d="M0-14 6 6 0 2-6 6z"/><text y="-18">N</text></g>
+            <path class="route__ghost" d="M40.0 55.0 C41.2 57.2, 43.9 63.9, 47.4 68.0 C50.9 72.1, 56.1 76.3, 61.0 79.7 C65.9 83.1, 71.0 85.9, 76.8 88.3 C82.6 90.7, 91.2 91.8, 95.7 94.2 C100.2 96.6, 102.2 98.5, 104.0 102.8 C105.8 107.1, 105.1 113.9, 106.2 120.2 C107.3 126.5, 108.3 132.4, 110.4 140.6 C112.5 148.8, 115.7 159.9, 118.8 169.6 C121.9 179.2, 125.3 188.6, 129.2 198.5 C133.0 208.4, 138.0 219.8, 141.9 229.0 C145.8 238.2, 149.6 246.7, 152.4 253.7 C155.2 260.7, 155.6 267.1, 158.7 271.0 C161.8 274.9, 167.7 273.8, 171.2 276.9 C174.7 280.0, 177.1 285.3, 179.7 289.9 C182.3 294.5, 184.0 301.2, 187.0 304.4 C190.0 307.5, 193.5 307.1, 197.5 308.8 C201.5 310.5, 207.2 312.2, 211.2 314.6 C215.2 317.0, 218.2 318.9, 221.7 323.2 C225.2 327.5, 228.0 335.3, 232.2 340.6 C236.4 345.9, 242.2 352.2, 246.9 355.1 C251.6 358.0, 258.2 357.6, 260.5 358.1"/>
+            <path id="route-path" class="route__line" d="M40.0 55.0 C41.2 57.2, 43.9 63.9, 47.4 68.0 C50.9 72.1, 56.1 76.3, 61.0 79.7 C65.9 83.1, 71.0 85.9, 76.8 88.3 C82.6 90.7, 91.2 91.8, 95.7 94.2 C100.2 96.6, 102.2 98.5, 104.0 102.8 C105.8 107.1, 105.1 113.9, 106.2 120.2 C107.3 126.5, 108.3 132.4, 110.4 140.6 C112.5 148.8, 115.7 159.9, 118.8 169.6 C121.9 179.2, 125.3 188.6, 129.2 198.5 C133.0 208.4, 138.0 219.8, 141.9 229.0 C145.8 238.2, 149.6 246.7, 152.4 253.7 C155.2 260.7, 155.6 267.1, 158.7 271.0 C161.8 274.9, 167.7 273.8, 171.2 276.9 C174.7 280.0, 177.1 285.3, 179.7 289.9 C182.3 294.5, 184.0 301.2, 187.0 304.4 C190.0 307.5, 193.5 307.1, 197.5 308.8 C201.5 310.5, 207.2 312.2, 211.2 314.6 C215.2 317.0, 218.2 318.9, 221.7 323.2 C225.2 327.5, 228.0 335.3, 232.2 340.6 C236.4 345.9, 242.2 352.2, 246.9 355.1 C251.6 358.0, 258.2 357.6, 260.5 358.1"/>
             <g class="route__head"><circle r="11" class="route__pulse"/><circle r="6"/></g>
           </svg>
         </div>
-        <figcaption><span class="route__km" data-km="150">0</span> von ca. 150 km <span class="route__note">(Platzhalter)</span></figcaption>
+        <figcaption><span class="route__km" data-km="46">0</span> von 46 km · ca. 2 h 20 min</figcaption>
       </figure>
       <dl class="route__stats reveal">
-        <dt>Strecke</dt><dd>XXX km in 3 Etappen</dd>
-        <dt>Etappe 1</dt><dd>[Start] → [Ziel] · XX km</dd>
-        <dt>Etappe 2</dt><dd>[Start] → [Ziel] · XX km</dd>
-        <dt>Etappe 3</dt><dd>[Start] → [Ziel] · XX km</dd>
-        <dt>Höhenmeter</dt><dd>ca. XXX hm</dd>
-        <dt>Schwierigkeit</dt><dd>Gemütlich (mit Kuchenpausen)</dd>
+        <dt>Wann</dt><dd>Sonntag, 01.11.2026</dd>
+        <dt>Start</dt><dd>Dorf Zechlin</dd>
+        <dt>Ziel</dt><dd>Löwenberg (Mark)</dd>
+        <dt>Strecke</dt><dd>46 km durchs Ruppiner Wald- und Seengebiet, vorbei an Lindow (Mark)</dd>
+        <dt>Fahrzeit</dt><dd>ca. 2 h 20 min</dd>
+        <dt>Steigung</dt><dd>Moderat</dd>
       </dl>
     </div>
     <div class="obj3d route__obj" data-obj="bottle" data-speed="-0.3"></div>
@@ -103,49 +114,52 @@
 
   <!-- ============ PROGRAMM ============ -->
   <section class="day section--lilac" id="programm">
-    <p class="day__date reveal">XX. – XX.XX.2027</p>
+    <p class="day__date reveal">30.10.2026</p>
     <div class="day__head">
       <h2 class="display day__name">Freitag</h2>
       <div class="obj3d day__obj" data-obj="guitar" data-speed="0.08"></div>
     </div>
     <ol class="timeline">
-      <li class="reveal"><time>9:30</time><h3>Treffpunkt &amp; Abfahrt</h3><p class="small">[Ort / Hinweis, z. B. „Kaffee &amp; Croissants stehen bereit“]</p><p class="addr">[Straße Nr.]<br>[PLZ Ort]</p></li>
-      <li class="reveal"><time>12:30</time><h3>Mittagspause</h3><p class="small">[Name Lokal / Picknick]</p><p class="addr">[Adresse]</p></li>
-      <li class="reveal"><time>16:00</time><h3>Ankunft &amp; Check-in</h3><p class="small">[Unterkunft]</p><p class="addr">[Adresse]</p></li>
-      <li class="reveal"><time>19:00</time><h3>Grillen &amp; Abendprogramm</h3><p class="small">[Platzhalter]</p></li>
+      <li class="reveal"><time>14:30 / 16:30</time><h3>Treffpunkt Gesundbrunnen</h3><p class="small">mit unseren Bikes – je nachdem, wie wir es schaffen</p><p class="addr">Bahnhof Berlin Gesundbrunnen</p></li>
+      <li class="reveal"><time>17:30 / 19:30</time><h3>Beziehen unserer Unterkunft</h3></li>
+      <li class="reveal"><time>Abends</time><h3>Gemütliches Kochen &amp; Spielen</h3></li>
     </ol>
   </section>
 
   <!-- Unterkunft: Bild mit Titel (wie „Hotel & Restaurant“ bei der Referenz) -->
   <section class="stay" id="unterkunft">
-    <img class="stay__img" src="assets/img/unterkunft-1.svg" alt="">
+    <img class="stay__img" src="assets/img/unterkunft-banner.jpg" alt="">
     <div class="stay__overlay">
-      <h2 class="serif stay__title reveal">Unsere Unterkunft<br>[Name / Ort]</h2>
+      <h2 class="serif stay__title reveal">Unser Haus<br>mit Sauna &amp; See</h2>
     </div>
   </section>
 
   <section class="day section--blue">
+    <p class="day__date reveal">31.10.2026</p>
     <div class="day__head">
       <h2 class="display day__name">Samstag</h2>
       <div class="obj3d day__obj" data-obj="balloons" data-speed="0.08"></div>
     </div>
-    <ol class="timeline">
-      <li class="reveal"><time>Bis 9:30</time><h3>Geburtstagsfrühstück</h3><p class="small">[Platzhalter]</p></li>
-      <li class="reveal"><time>10:30</time><h3>Etappe 2</h3><p class="small">[Start] → [Ziel] · XX km</p></li>
-      <li class="reveal"><time>14:00</time><h3>Badestopp / Überraschung</h3><p class="small">[Platzhalter]</p></li>
-      <li class="reveal"><time>Abends</time><h3>Party!</h3><p class="small">[Restaurant / Programm]</p><p class="addr">[Adresse]</p></li>
+    <ol class="timeline timeline--acts">
+      <li class="reveal"><span class="act">Ausschlafen</span></li>
+      <li class="reveal"><span class="act">Spätes Frühstück</span></li>
+      <li class="reveal"><span class="act">Aktivität</span><h3>am/auf dem See</h3></li>
+      <li class="reveal"><span class="act">Saunieren</span></li>
+      <li class="reveal"><span class="act">DIY-Time</span></li>
+      <li class="reveal"><span class="act">Kochen &amp; Spielen</span></li>
     </ol>
   </section>
 
   <section class="day section--lilac">
+    <p class="day__date reveal">01.11.2026</p>
     <div class="day__head">
       <h2 class="display day__name">Sonntag</h2>
       <div class="obj3d day__obj" data-obj="lotto" data-speed="0.08"></div>
     </div>
-    <ol class="timeline">
-      <li class="reveal"><time>Bis 11:00</time><h3>Frühstück &amp; Check-out</h3></li>
-      <li class="reveal"><time>12:00</time><h3>Etappe 3</h3><p class="small">[Start] → [Ziel] · XX km</p></li>
-      <li class="reveal"><time>Abends</time><h3>Heimfahrt – ausruhen</h3><p class="small">Regenerieren is auch mal fein!</p></li>
+    <ol class="timeline timeline--acts">
+      <li class="reveal"><span class="act">Ausschlafen</span></li>
+      <li class="reveal"><span class="act">Fahrradtour</span><h3>durch die Natur</h3><p class="small">Dorf Zechlin → Löwenberg (Mark) · 46 km</p><p class="addr"><a href="#route">Zur Route</a></p></li>
+      <li class="reveal"><time>Nachmittags</time><h3>Rückfahrt nach Berlin</h3></li>
     </ol>
   </section>
 
@@ -153,12 +167,12 @@
   <section class="lodging section--cream">
     <h2 class="spaced reveal">Die Unterkunft</h2>
     <div class="collage">
-      <img class="collage__a reveal" src="assets/img/unterkunft-1.svg" alt="Unterkunft – außen">
-      <img class="collage__b reveal" src="assets/img/unterkunft-2.svg" alt="Unterkunft – Zimmer">
-      <img class="collage__c reveal" src="assets/img/unterkunft-3.svg" alt="Unterkunft – Umgebung">
+      <img class="collage__a reveal" src="assets/img/unterkunft-haus.jpg" alt="Das Haus mit rotem Dach und Holzzaun" loading="lazy">
+      <img class="collage__b reveal" src="assets/img/unterkunft-sauna.jpg" alt="Die Sauna im Haus" loading="lazy">
+      <img class="collage__c reveal" src="assets/img/unterkunft-see.jpg" alt="Sandstrand am See" loading="lazy">
       <a class="btn collage__btn" href="https://www.airbnb.de/rooms/1284839305458168826" target="_blank" rel="noopener">Zur Unterkunft auf Airbnb</a>
     </div>
-    <p class="lodging__text reveal">[Platzhalter] 2 Nächte · X Schlafzimmer · X Betten · Bettwäsche &amp; Handtücher vorhanden.</p>
+    <p class="lodging__text reveal">2 Nächte · Haus mit eigener Sauna · See zum Baden, Paddeln oder einfach Reingucken</p>
     <div class="obj3d lodging__obj" data-obj="balloon" data-speed="-0.25"></div>
   </section>
 
@@ -167,10 +181,12 @@
     <h2 class="spaced reveal">Was du einpacken solltest</h2>
     <ul class="pack__list">
       <li class="reveal">Fahrrad (fit gemacht!) &amp; Helm</li>
+      <li class="reveal">Fahrradlicht</li>
       <li class="reveal">Regenjacke</li>
+      <li class="reveal">Warme Klamotten</li>
+      <li class="reveal">Sauna-Handtuch</li>
       <li class="reveal">Badesachen</li>
       <li class="reveal">Trinkflasche</li>
-      <li class="reveal">Sonnencreme</li>
       <li class="reveal">Gute Laune</li>
     </ul>
   </section>

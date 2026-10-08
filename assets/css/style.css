@@ -270,6 +270,16 @@ section, header, footer { position: relative; }
   font-size: clamp(1.2rem, 2.6vw, 1.5rem);
 }
 .timeline .small { font-size: .85rem; font-weight: 600; margin-top: .3rem; }
+.timeline .act {
+  display: block;
+  font-family: var(--f-display);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  color: var(--red);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.timeline--acts { gap: 2rem; }
+.timeline a { color: inherit; }
 .timeline .addr { font-size: .8rem; opacity: .8; margin-top: .5rem; }
 .section--blue .timeline h3,
 .section--blue .timeline p { color: var(--cream); }
@@ -357,10 +367,15 @@ section, header, footer { position: relative; }
 .outro__obj--b { bottom: 4vh; right: 8vw; }
 
 /* ---------- Route zeichnet sich ---------- */
-.route__canvas { position: relative; }
+.route__canvas { position: relative; aspect-ratio: 3 / 4; background: #2a6248; }
 .route__svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.map__land { fill: #2a6248; }
+.map__lakes path { fill: #4cc3b4; opacity: .9; }
+.map__area { font-family: var(--f-serif); font-style: italic; font-size: 11px; fill: rgba(251, 243, 226, .55); text-anchor: middle; }
+.map__north path { fill: var(--cream); }
+.map__north text { font-family: var(--f-display); font-size: 11px; fill: var(--cream); text-anchor: middle; }
 .route__ghost, .route__line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.route__ghost { stroke: rgba(255, 255, 255, .45); stroke-width: 3; stroke-dasharray: 2 9; }
+.route__ghost { stroke: rgba(255, 255, 255, .5); stroke-width: 3; stroke-dasharray: 2 8; }
 .route__line { stroke: var(--red); stroke-width: 6; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .25)); }
 .route__head circle { fill: var(--red); stroke: var(--white); stroke-width: 3; }
 .route__head .route__pulse { fill: rgba(255, 79, 46, .35); stroke: none; animation: pulse 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
@@ -368,7 +383,7 @@ section, header, footer { position: relative; }
 .route__stop { opacity: 0; transition: opacity .4s; }
 .route__stop.is-on { opacity: 1; }
 .route__stop circle { fill: var(--white); stroke: var(--ink); stroke-width: 3; }
-.route__stop text { font-family: var(--f-display); font-size: 17px; fill: var(--ink); paint-order: stroke; stroke: var(--white); stroke-width: 4px; text-transform: uppercase; }
+.route__stop text { font-family: var(--f-display); font-size: 15px; fill: var(--white); paint-order: stroke; stroke: var(--ink); stroke-width: 4px; text-transform: uppercase; }
 .route__km { font-family: var(--f-display); font-size: 1.4em; color: var(--red); font-variant-numeric: tabular-nums; }
 .route__note { opacity: .5; }
 
