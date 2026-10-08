@@ -4,6 +4,7 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var isMobile = window.matchMedia("(max-width: 720px)").matches;
+  var isTouch = window.matchMedia("(pointer: coarse)").matches;
 
   /* ---------- Einblenden beim Scrollen ---------- */
   var revealEls = document.querySelectorAll(".reveal");
@@ -55,8 +56,8 @@
     if (!fig || !path || !path.getTotalLength) return;
     var svg = path.ownerSVGElement;
     var len = path.getTotalLength();
-    path.style.strokeDasharray = len;
-    path.style.strokeDashoffset = len;
+    path.setAttribute("stroke-dasharray", len);
+    path.setAttribute("stroke-dashoffset", len);
     var head = svg.querySelector(".route__head");
     var kmEl = document.querySelector(".route__km");
     var totalKm = parseFloat(kmEl && kmEl.dataset.km) || 0;
@@ -85,7 +86,7 @@
       var vh = window.innerHeight;
       var p = (vh * 0.85 - r.top) / (r.height + vh * 0.35);
       p = reduceMotion ? 1 : Math.max(0, Math.min(1, p));
-      path.style.strokeDashoffset = len * (1 - p);
+      path.setAttribute("stroke-dashoffset", (len * (1 - p)).toFixed(2));
       if (head) {
         var pt = path.getPointAtLength(len * p);
         head.setAttribute("transform", "translate(" + pt.x + " " + pt.y + ")");
@@ -94,8 +95,11 @@
       stops.forEach(function (s) { s.el.classList.toggle("is-on", p >= s.at - 0.001); });
       if (kmEl && totalKm) kmEl.textContent = Math.round(totalKm * p);
     }
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
+    var queued = false;
+    function queue() { if (!queued) { queued = true; requestAnimationFrame(function () { queued = false; update(); }); } }
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("touchmove", queue, { passive: true });
+    window.addEventListener("resize", queue);
     update();
   })();
 
@@ -1126,8 +1130,13 @@
   /* ---------- Render-Loop ---------- */
   var W = 0, H = 0;
   function resize() {
-    W = window.innerWidth;
-    H = window.innerHeight;
+    // Auf dem Handy ändert die ein-/ausfahrende Adressleiste nur die Höhe:
+    // dann Canvas nur vergrößern, nie verkleinern – sonst springen die Objekte
+    var w = window.innerWidth, h = window.innerHeight;
+    var sameWidth = w === W;
+    if (isTouch && sameWidth && h <= H) return;
+    W = w;
+    H = isTouch && sameWidth ? Math.max(h, H) : h;
     renderer.setSize(W, H); // setzt auch die CSS-Größe (wichtig bei iOS-Adressleiste)
     camera.left = -W / 2; camera.right = W / 2;
     camera.top = H / 2; camera.bottom = -H / 2;
@@ -1135,17 +1144,12 @@
   }
   window.addEventListener("resize", resize);
 
-  // Maus (Desktop) bzw. Neigung (Handy, wo ohne Nachfrage erlaubt)
+  // Maus (nur Desktop)
   var mouseX = 0, mouseY = 0, tx = 0, ty = 0;
   window.addEventListener("pointermove", function (e) {
     if (e.pointerType !== "mouse") return;
     tx = e.clientX / W - 0.5;
     ty = e.clientY / H - 0.5;
-  });
-  window.addEventListener("deviceorientation", function (e) {
-    if (e.gamma == null) return;
-    tx = Math.max(-0.5, Math.min(0.5, e.gamma / 60));
-    ty = Math.max(-0.5, Math.min(0.5, (e.beta - 45) / 60));
   });
 
   /* ---------- Glas-Konfetti / Splitter (Bildschirm-Koordinaten) ---------- */

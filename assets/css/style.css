@@ -380,7 +380,7 @@ section, header, footer { position: relative; }
 .map__north text { font-family: var(--f-display); font-size: 11px; fill: var(--cream); text-anchor: middle; }
 .route__ghost, .route__line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .route__ghost { stroke: rgba(255, 255, 255, .5); stroke-width: 3; stroke-dasharray: 2 8; }
-.route__line { stroke: var(--red); stroke-width: 6; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .25)); }
+.route__line { stroke: var(--red); stroke-width: 6; }
 .route__head circle { fill: var(--red); stroke: var(--white); stroke-width: 3; }
 .route__head .route__pulse { fill: rgba(255, 79, 46, .35); stroke: none; animation: pulse 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes pulse { from { transform: scale(.6); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
@@ -410,18 +410,18 @@ section, header, footer { position: relative; }
   user-select: none;
 }
 .scratch__card.is-won { transform: rotate(0) scale(1.04); }
-.scratch__prize {
+.scratch__prize { position: absolute; inset: 0; }
+.scratch__photo { width: 100%; height: 100%; object-fit: cover; }
+.scratch__win {
   position: absolute;
-  inset: 0;
-  display: grid;
-  place-content: center;
-  gap: .4rem;
-  padding: 1.2rem;
-  color: var(--blue);
+  left: 0; right: 0; bottom: 0;
+  padding: 2.4rem 1rem .9rem;
+  background: linear-gradient(transparent, rgba(16, 23, 46, .85));
+  color: var(--butter);
+  font-size: clamp(1.35rem, 5.4vw, 2.1rem);
+  line-height: 1;
+  text-align: center;
 }
-.scratch__kicker { font-weight: 600; text-transform: uppercase; letter-spacing: .3em; font-size: .8rem; color: var(--red); }
-.scratch__win { font-size: clamp(2.2rem, 8vw, 3.4rem); }
-.scratch__text { font-size: .95rem; }
 .scratch__layer {
   position: absolute;
   inset: 0;
