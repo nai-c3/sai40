@@ -108,6 +108,10 @@ section, header, footer { position: relative; }
 }
 .hero__obj--a { width: 18vw; max-width: 200px; aspect-ratio: 1; top: 8vh; right: 14vw; }
 .hero__obj--b { width: 22vw; max-width: 280px; aspect-ratio: 1; bottom: 8vh; left: 8vw; }
+.hero__obj--c { width: 10vw; max-width: 140px; aspect-ratio: 1; top: 12vh; left: 10vw; }
+.hero__obj--d { width: 12vw; max-width: 160px; aspect-ratio: 1; bottom: 10vh; right: 8vw; }
+.hero__obj--e { width: 8vw; max-width: 110px; aspect-ratio: 1; top: 40vh; right: 4vw; }
+.hero__line { will-change: translate; }
 
 /* ---------- Teaser ---------- */
 .teaser {
@@ -471,6 +475,9 @@ section, header, footer { position: relative; }
   .hero__sub { margin-top: 1.5rem; }
   .hero__obj--a { width: 28vw; top: 4svh; right: 3vw; }
   .hero__obj--b { width: 40vw; bottom: 2svh; left: 0; }
+  .hero__obj--c { width: 22vw; top: 6svh; left: 4vw; }
+  .hero__obj--d { width: 26vw; bottom: 6svh; right: 4vw; }
+  .hero__obj--e { width: 18vw; top: 34svh; right: 0; }
 
   .teaser { padding: 12svh 16px 16svh; }
   .teaser__q { margin-bottom: 10svh; }

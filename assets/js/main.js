@@ -25,6 +25,29 @@
   // Platzhalter – werden vom 3D-Teil durch Glas-Konfetti ersetzt
   var fx = { burst: function () {}, rain: function () {} };
 
+  /* ---------- Parallax für HTML-Elemente (data-parallax="Faktor") ---------- */
+  (function domParallax() {
+    var els = [].slice.call(document.querySelectorAll("[data-parallax]")).map(function (el) {
+      return { el: el, f: parseFloat(el.dataset.parallax) || 0, sec: el.closest("section, header, footer") || el.parentElement };
+    });
+    if (!els.length || reduceMotion) return;
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var vh = window.innerHeight;
+      els.forEach(function (o) {
+        var r = o.sec.getBoundingClientRect();
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        // Hero: ab Seitenanfang; sonst relativ zur Bildschirmmitte
+        var d = o.sec.tagName === "HEADER" ? -r.top : (r.top + r.height / 2 - vh / 2);
+        o.el.style.translate = "0 " + (d * o.f).toFixed(1) + "px";
+      });
+    }
+    window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  })();
+
   /* Route zeichnet sich beim Scrollen */
   (function routeDraw() {
     var fig = document.querySelector(".route__map");
@@ -978,7 +1001,7 @@
       roughness: 0.12,
       envMapIntensity: 0.5,
       transparent: true,
-      opacity: src.map ? 0.68 : Math.max(0.08, 0.62 - 0.56 * lum),
+      opacity: src.map ? 0.78 : Math.max(0.24, 0.72 - 0.5 * lum),
       depthWrite: false,
       side: THREE.DoubleSide,
       flatShading: !!src.flatShading
@@ -999,7 +1022,7 @@
     m.onBeforeCompile = function (shader) {
       shader.fragmentShader = shader.fragmentShader.replace("#include <dithering_fragment>",
         "float fr = pow(1.0 - abs(dot(normalize(normal), vec3(0.0, 0.0, 1.0))), 2.6);\n" +
-        "gl_FragColor.rgb = gl_FragColor.rgb * (0.05 + 0.55 * fr) + vec3(0.85, 0.9, 1.0) * fr * 0.3;\n" +
+        "gl_FragColor.rgb = gl_FragColor.rgb * (0.1 + 0.7 * fr) + vec3(0.85, 0.9, 1.0) * fr * 0.55;\n" +
         "#include <dithering_fragment>");
     };
     return m;
@@ -1073,7 +1096,7 @@
     });
 
     // Zufällig verstreute kleinere Objekte am Seitenrand
-    var floaterCount = isMobile ? 8 : 16;
+    var floaterCount = isMobile ? 16 : 28;
     var docH = document.documentElement.scrollHeight;
     var vh = window.innerHeight;
     // Container mit overflow:hidden, damit Randobjekte keinen horizontalen Scroll erzeugen
@@ -1086,13 +1109,15 @@
       f.className = "obj3d obj3d--floater";
       var left = i % 2 === 0;
       // Auf dem Handy halb aus dem Bild ragen lassen, damit der Text frei bleibt
-      f.style.left = left ? (isMobile ? rand(-10, 2) : rand(2, 12)) + "vw" : (isMobile ? rand(80, 90) : rand(84, 92)) + "vw";
-      f.style.top = Math.round(vh * 0.9 + (docH - vh * 1.5) * (i + Math.random() * 0.8) / floaterCount) + "px";
-      var s = isMobile ? rand(70, 100) : rand(70, 120);
+      // meist am Rand, jedes vierte Objekt frei im Raum
+      var x = i % 4 === 3 ? rand(25, 65) : left ? (isMobile ? rand(-6, 10) : rand(2, 14)) : (isMobile ? rand(70, 86) : rand(80, 92));
+      f.style.left = x + "vw";
+      f.style.top = Math.round(vh * 0.1 + (docH - vh * 0.6) * (i + Math.random() * 0.8) / floaterCount) + "px";
+      var s = (isMobile ? rand(80, 120) : rand(90, 150)) * (i % 4 === 3 ? 0.7 : 1);
       f.style.width = s + "px";
       f.style.height = s + "px";
       layer.appendChild(f);
-      addItem(f, pick(randomPool), rand(-0.5, 0.5));
+      addItem(f, pick(randomPool), rand(-0.7, 0.7));
     }
     resize();
     requestAnimationFrame(frame);

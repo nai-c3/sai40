@@ -19,19 +19,22 @@
   <!-- ============ HERO ============ -->
   <header class="hero section--blue">
     <h1 class="hero__title">
-      <span class="hero__line">Simon</span>
-      <span class="hero__line">wird 40</span>
+      <span class="hero__line" data-parallax="0.15">Simon</span>
+      <span class="hero__line" data-parallax="0.32">wird 40</span>
     </h1>
-    <img class="hero__photo" src="assets/img/simon.webp" alt="Simon mit Gitarre, Cap und Sonnenbrille" width="1400" height="1009">
+    <img class="hero__photo" data-parallax="-0.22" src="assets/img/simon.webp" alt="Simon mit Gitarre, Cap und Sonnenbrille" width="1400" height="1009">
     <div class="obj3d hero__obj hero__obj--a" data-obj="disco" data-speed="0.35"></div>
     <div class="obj3d hero__obj hero__obj--b" data-obj="balloons" data-speed="-0.2"></div>
-    <p class="serif hero__sub">und wir feiern das!</p>
+    <div class="obj3d hero__obj hero__obj--c" data-obj="bottle" data-speed="0.5"></div>
+    <div class="obj3d hero__obj hero__obj--d" data-obj="helmet" data-speed="-0.45"></div>
+    <div class="obj3d hero__obj hero__obj--e" data-obj="balloon" data-speed="0.7"></div>
+    <p class="serif hero__sub" data-parallax="0.12">und wir feiern das!</p>
   </header>
 
   <!-- ============ TEASER ============ -->
   <section class="teaser section--blue">
     <p class="serif teaser__q reveal">Die Frage ist nur…</p>
-    <h2 class="display teaser__big reveal">Aber<br>wieeeee?</h2>
+    <h2 class="display teaser__big reveal" data-parallax="-0.15">Aber<br>wieeeee?</h2>
     <div class="obj3d teaser__obj" data-obj="bike" data-speed="0" data-ride="true"></div>
     <p class="serif teaser__answer reveal">Auf zwei Rädern. Drei Tage. Zwei Nächte.</p>
   </section>
@@ -44,7 +47,7 @@
       <path d="M0 88c120-40 240-40 360 0s240 40 360 0 240-40 360 0 240 40 360 0" fill="none" stroke="var(--ink)" stroke-width="3"/>
     </svg>
     <img class="place__img" src="assets/img/see-landschaft.jpg" alt="Seeufer mit Birken im Ruppiner Seenland">
-    <h2 class="display place__title reveal">Ruppiner<br>Seenland</h2>
+    <h2 class="display place__title reveal" data-parallax="-0.25">Ruppiner<br>Seenland</h2>
   </section>
 
   <!-- ============ EINLADUNG / ECKDATEN ============ -->
@@ -115,7 +118,7 @@
   <section class="day section--lilac" id="programm">
     <p class="day__date reveal">30.10.2026</p>
     <div class="day__head">
-      <h2 class="display day__name">Freitag</h2>
+      <h2 class="display day__name" data-parallax="-0.12">Freitag</h2>
       <div class="obj3d day__obj" data-obj="guitar" data-speed="0.08"></div>
     </div>
     <ol class="timeline">
@@ -136,7 +139,7 @@
   <section class="day section--blue">
     <p class="day__date reveal">31.10.2026</p>
     <div class="day__head">
-      <h2 class="display day__name">Samstag</h2>
+      <h2 class="display day__name" data-parallax="-0.12">Samstag</h2>
       <div class="obj3d day__obj" data-obj="balloons" data-speed="0.08"></div>
     </div>
     <ol class="timeline timeline--acts">
@@ -152,7 +155,7 @@
   <section class="day section--lilac">
     <p class="day__date reveal">01.11.2026</p>
     <div class="day__head">
-      <h2 class="display day__name">Sonntag</h2>
+      <h2 class="display day__name" data-parallax="-0.12">Sonntag</h2>
       <div class="obj3d day__obj" data-obj="lotto" data-speed="0.08"></div>
     </div>
     <ol class="timeline timeline--acts">
@@ -208,7 +211,7 @@
   <footer class="outro section--lilac">
     <div class="obj3d outro__obj outro__obj--a" data-obj="balloons" data-speed="0.3"></div>
     <div class="obj3d outro__obj outro__obj--b" data-obj="disco" data-speed="-0.3"></div>
-    <h2 class="display outro__title reveal">Wir lieben dich!</h2>
+    <h2 class="display outro__title reveal" data-parallax="-0.12">Wir lieben dich!</h2>
     <p class="serif outro__sign reveal">Deine [Absender]</p>
     <p class="outro__tip reveal">Psst: Ballons lassen sich antippen – und die Gitarre auch.</p>
   </footer>
