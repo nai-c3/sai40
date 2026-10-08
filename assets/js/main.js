@@ -31,7 +31,7 @@
     var els = [].slice.call(document.querySelectorAll("[data-parallax]")).map(function (el) {
       return { el: el, f: parseFloat(el.dataset.parallax) || 0, sec: el.closest("section, header, footer") || el.parentElement };
     });
-    if (!els.length || reduceMotion) return;
+    if (!els.length) return;
     var ticking = false;
     function update() {
       ticking = false;
@@ -85,7 +85,7 @@
       var r = fig.getBoundingClientRect();
       var vh = window.innerHeight;
       var p = (vh * 0.85 - r.top) / (r.height + vh * 0.35);
-      p = reduceMotion ? 1 : Math.max(0, Math.min(1, p));
+      p = Math.max(0, Math.min(1, p));
       path.setAttribute("stroke-dashoffset", (len * (1 - p)).toFixed(2));
       if (head) {
         var pt = path.getPointAtLength(len * p);
@@ -1094,6 +1094,18 @@
     });
   }
 
+  var smoothY = window.scrollY;
+  function measure() {
+    var sx = window.scrollX, sy = window.scrollY;
+    items.forEach(function (it) {
+      var r = it.el.getBoundingClientRect();
+      it.px = r.left + r.width / 2 + sx;
+      it.py = r.top + r.height / 2 + sy;
+      it.size = Math.max(r.width, r.height) * 0.5;
+      it.w = r.width;
+    });
+  }
+
   function init() {
     document.querySelectorAll(".obj3d").forEach(function (el) {
       addItem(el, el.dataset.obj, parseFloat(el.dataset.speed || "0.2"));
@@ -1124,6 +1136,10 @@
       addItem(f, pick(randomPool), rand(-0.7, 0.7));
     }
     resize();
+    measure();
+    smoothY = window.scrollY;
+    window.addEventListener("load", measure);
+    setInterval(measure, 1000); // Layout ändert sich z. B. durch nachladende Bilder
     requestAnimationFrame(frame);
   }
 
@@ -1142,7 +1158,7 @@
     camera.top = H / 2; camera.bottom = -H / 2;
     camera.updateProjectionMatrix();
   }
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize", function () { resize(); measure(); });
 
   // Maus (nur Desktop)
   var mouseX = 0, mouseY = 0, tx = 0, ty = 0;
@@ -1317,28 +1333,32 @@
     var now = performance.now();
     var dt = Math.min(0.05, (now - lastNow) / 1000);
     lastNow = now;
-    var t = reduceMotion ? 0 : clock.getElapsedTime();
+    var t = clock.getElapsedTime() * (reduceMotion ? 0.3 : 1);
     var scroll = window.scrollY;
+    // geglättete Scrollposition: Objekte gleiten weich hinterher statt zu zittern
+    var k = 1 - Math.pow(0.7, dt * 60);
+    smoothY += (scroll - smoothY) * k;
+    if (Math.abs(scroll - smoothY) < 0.3) smoothY = scroll;
     mouseX += (tx - mouseX) * 0.06;
     mouseY += (ty - mouseY) * 0.06;
     var anyVisible = false;
     items.forEach(function (it) {
-      var r = it.el.getBoundingClientRect();
-      var cx = r.left + r.width / 2;
-      var cy = r.top + r.height / 2;
-      var size = Math.max(r.width, r.height) * 0.5;
+      // Position aus dem Cache (Seitenkoordinaten) statt Layout-Abfrage pro Frame
+      var cx = it.px - window.scrollX;
+      var cy = it.py - smoothY;
+      var size = it.size;
+      var r = { width: it.w };
       var y, roll = null;
       if (it.ride) {
         // Fahrrad fährt beim Scrollen durch den Abschnitt von links nach rechts
         // Fortschritt: Anker kommt unten rein (0) bis er oben rausgeht (1)
         var p = (H + size * 0.6 - cy) / (H + size * 1.2);
         p = Math.max(0, Math.min(1, (p - 0.08) / 0.84));
-        if (reduceMotion) p = 0.5;
         cx = -size * 1.1 + (W + size * 2.2) * p;
         y = cy;
         roll = -cx / (size * 0.47);
       } else {
-        var offset = reduceMotion ? 0 : (cy - H / 2) * it.speed;
+        var offset = (cy - H / 2) * it.speed;
         y = cy - offset;
       }
       var visible = y + size > -80 && y - size < H + 80 && r.width > 0;
