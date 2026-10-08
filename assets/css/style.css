@@ -90,16 +90,16 @@ section, header, footer { position: relative; }
 }
 .hero__line { display: block; }
 .hero__photo {
+  /* freigestelltes Foto (transparenter Hintergrund) über dem Titel */
   position: absolute;
   left: 50%;
   top: 50%;
-  width: clamp(120px, 30vw, 360px);
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  transform: translate(-50%, -54%);
-  border-radius: 48% 52% 42% 58% / 55% 45% 55% 45%;
+  width: clamp(300px, 54vw, 780px);
+  height: auto;
+  transform: translate(-44%, -36%);
   z-index: 2;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, .25);
+  filter: drop-shadow(0 30px 40px rgba(16, 23, 46, .35));
+  pointer-events: none;
 }
 .hero__sub {
   margin-top: 2rem;
@@ -445,6 +445,11 @@ section, header, footer { position: relative; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
 
+/* Desktop: Unterzeile unter das Foto setzen */
+@media (min-width: 721px) {
+  .hero__sub { position: absolute; bottom: 5vh; left: 50%; transform: translateX(-50%); margin: 0; white-space: nowrap; }
+}
+
 /* ---------- Mobil ---------- */
 @media (max-width: 720px) {
   html { -webkit-text-size-adjust: 100%; }
@@ -457,9 +462,11 @@ section, header, footer { position: relative; }
     position: relative;
     left: auto;
     top: auto;
-    width: 58vw;
-    margin-top: -7vw;
-    transform: rotate(-3deg);
+    width: 112vw;
+    max-width: none;
+    margin: -14vw -4vw 0 0;
+    align-self: flex-end;
+    transform: none;
   }
   .hero__sub { margin-top: 1.5rem; }
   .hero__obj--a { width: 28vw; top: 4svh; right: 3vw; }

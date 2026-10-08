@@ -6,7 +6,7 @@ Reines HTML/CSS/JS, kein Build nötig: `index.html` im Browser öffnen oder z. B
 
 ## Inhalte anpassen
 - **Texte:** alles in `[eckigen Klammern]` bzw. mit `XX` in `index.html` ersetzen.
-- **Bilder:** in `assets/img/`. Unterkunft und See sind echte Fotos; offen ist noch `simon.svg` (Hero) – am besten ein freigestelltes PNG.
+- **Bilder:** in `assets/img/`. Unterkunft und See sind echte Fotos; Simon im Hero: `simon.webp` (freigestellt, transparenter Hintergrund).
 - **3D-Objekte:** jedes `<div class="obj3d" data-obj="…" data-speed="…">` erzeugt ein 3D-Objekt.
   - `data-obj`: `bike`, `helmet`, `lotto` (Rubbellos), `guitar`, `bottle` (Simon-Wasserflasche), `disco`, `balloon`, `balloons` (Ballon-Strauß) (unbekannt = zufällig)
   - `data-speed`: Parallax-Stärke (negativ = Gegenrichtung)
