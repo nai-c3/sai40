@@ -239,6 +239,7 @@ section, header, footer { position: relative; }
   font-family: var(--f-display);
   font-size: clamp(1.6rem, 4vw, 2.6rem);
   color: var(--white);
+  margin-bottom: .8rem;
 }
 .day__head { position: relative; margin-bottom: 4rem; }
 .day__name {
