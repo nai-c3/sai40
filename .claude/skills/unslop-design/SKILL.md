@@ -1,5 +1,5 @@
 ---
-name: unslop-ui
+name: unslop-design
 description: >-
   Use whenever building, styling, reviewing, refactoring, or auditing any website, landing page,
   web app UI, dashboard, or front-end component. Removes the cues that make a site read as
@@ -9,7 +9,7 @@ description: >-
   vibe-coded, Tailwind, or shadcn.
 ---
 
-# unslop-ui
+# unslop-design
 
 Read this first, because the most common misunderstanding sinks the whole thing.
 
@@ -48,7 +48,7 @@ chosen on purpose.
 ## How this differs from a general frontend-design skill
 
 Claude already ships a frontend-design skill, and it is good, but it produces the cream
-+ serif + green house look that this skill now flags as a tell. unslop-ui is
++ serif + green house look that this skill now flags as a tell. unslop-design is
 complementary and adds three things that one does not: a deterministic scan you can run
 in CI (a high-severity count gates a build), a data-grounded ranking so effort goes where
 real complaints are, and an explicit check against the new "tasteful default" so you do
